@@ -1,0 +1,23 @@
+.login-card {
+    width: 320px;
+    margin: 40px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+}
+
+.field-error {
+    color: #c00;
+    font-size: 0.85em;
+}
+
+.error {
+    color: #c00;
+    margin-top: 10px;
+}
+
+button {
+    margin-top: 12px;
+    width: 100%;
+    padding: 8px;
+}
