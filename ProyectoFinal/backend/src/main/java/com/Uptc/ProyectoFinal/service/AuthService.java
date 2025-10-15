@@ -1,9 +1,10 @@
 package com.Uptc.ProyectoFinal.service;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,9 @@ public class AuthService {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
+    private JavaMailSender mailSender;
+
+    @Autowired
     private JwtService jwtService;
 
     public AuthResponse login(LoginRequest request) {
@@ -33,7 +37,6 @@ public class AuthService {
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new RuntimeException("Contraseña incorrecta");
         }
-
         String token = jwtService.generateToken(user.getUsername());
         return new AuthResponse(token, user.getUsername());
     }
@@ -52,26 +55,30 @@ public class AuthService {
         return true;
     }
 
-    public void requestPasswordReset(String email) {
+    public void sendPasswordResetEmail(String email) {
         User user = userRepository.findByEmail(email)
-            .orElseThrow(() -> new RuntimeException("Email no registrado"));
+            .orElseThrow(() -> new RuntimeException("No existe un usuario con ese correo"));
 
         String token = UUID.randomUUID().toString();
         user.setResetToken(token);
-        user.setTokenExpirity(LocalDateTime.now().plusMinutes(30)); // válido 30 min
         userRepository.save(user);
 
-        // Aquí se enviaría un correo con un link que contiene el token
-        String resetLink = "http://localhost:8080/reset-password?token=" + token;
-        emailService.sendEmail(email, "Recupera tu contraseña", 
-            "Haz clic aquí para restablecer tu contraseña:\n" + resetLink);
+        String resetUrl = "http://localhost:8080/reset-password?token=" + token;
+        String message = "Haz clic en el siguiente enlace para restablecer tu contraseña:\n" + resetUrl;
+
+        SimpleMailMessage mail = new SimpleMailMessage();
+        mail.setTo(email);
+        mail.setSubject("Recuperación de contraseña");
+        mail.setText(message);
+
+        mailSender.send(mail);
     }
 
     public void resetPassword(String token, String newPassword) {
         User user = userRepository.findByResetToken(token)
-            .orElseThrow(() -> new RuntimeException("Token inválido"));
+            .orElseThrow(() -> new RuntimeException("Token inválido o expirado"));
 
-        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setPassword(newPassword); // ⚠️ cifrar con BCrypt antes de guardar
         user.setResetToken(null);
         userRepository.save(user);
     }
