@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa de Grafos - Boyacá</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 0;
+        }
+
+        .sidebar {
+            background: #f8f9fa;
+            padding: 30px;
+            border-right: 2px solid #e0e0e0;
+        }
+
+        .control-section {
+            margin-bottom: 30px;
+        }
+
+        .control-section h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        select, input, button {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .canvas-container {
+            padding: 30px;
+            position: relative;
+        }
+
+        canvas {
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            display: block;
+            cursor: move;
+            background: #fafafa;
+        }
+
+        .info-panel {
+            background: #f0f7ff;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .info-panel h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .info-panel p {
+            color: #555;
+            line-height: 1.6;
+            margin: 5px 0;
+        }
+
+        .legend {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .legend h4 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+        }
+
+        .legend-color {
+            width: 30px;
+            height: 4px;
+            margin-right: 10px;
+            border-radius: 2px;
+        }
+
+        .legend-node {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .stat-box {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid #e0e0e0;
+        }
+
+        .stat-box .number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-box .label {
+            color: #777;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .error {
+            background: #ffe5e5;
+            border: 2px solid #e74c3c;
+            color: #c0392b;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px;
+        }
+
+        .api-config {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .api-config input {
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🗺️ Mapa de Grafos - Boyacá</h1>
+            <p>Visualización interactiva conectada a Spring Boot API</p>
+        </div>
+
+        <div class="content">
+            <div class="sidebar">
+                <div class="api-config">
+                    <label><strong>🔌 URL API:</strong></label>
+                    <input type="text" id="apiUrl" value="http://localhost:8080/api/boyaca" placeholder="URL del API">
+                    <button onclick="cargarDatos()" style="margin-top: 10px; background: #27ae60;">Conectar</button>
+                </div>
+
+                <div class="control-section">
+                    <h3>📍 Calcular Ruta</h3>
+                    <div class="form-group">
+                        <label>Origen:</label>
+                        <select id="origenSelect" disabled>
+                            <option value="">Cargando...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Destino:</label>
+                        <select id="destinoSelect" disabled>
+                            <option value="">Cargando...</option>
+                        </select>
+                    </div>
+                    <button onclick="calcularRuta()" id="calcularBtn" disabled>Calcular Ruta Más Corta</button>
+                    <button onclick="limpiarRuta()" style="background: #95a5a6;">Limpiar</button>
+                </div>
+
+                <div class="info-panel" id="infoRuta" style="display: none;">
+                    <h4>🚗 Información de Ruta</h4>
+                    <p id="rutaInfo"></p>
+                </div>
+
+                <div class="stats">
+                    <div class="stat-box">
+                        <div class="number" id="totalMunicipios">-</div>
+                        <div class="label">Municipios</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="number" id="totalConexiones">-</div>
+                        <div class="label">Conexiones</div>
+                    </div>
+                </div>
+
+                <div class="legend">
+                    <h4>Leyenda</h4>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #e74c3c; height: 3px;"></div>
+                        <span>Vía Principal</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #f39c12; height: 3px;"></div>
+                        <span>Vía Secundaria</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #95a5a6; height: 3px;"></div>
+                        <span>Vía Terciaria</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-node" style="background: #3498db;"></div>
+                        <span>Municipio</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-node" style="background: #e67e22; border: 3px solid #d35400;"></div>
+                        <span>Capital (Tunja)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="canvas-container">
+                <canvas id="grafoCanvas" width="1000" height="700"></canvas>
+                <div id="loadingMsg" class="loading">Cargando datos del servidor...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('grafoCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        let municipios = {};
+        let conexiones = [];
+        let rutaActual = null;
+        let apiBaseUrl = 'http://localhost:8081/api/boyaca';
+
+        // Posiciones fijas para visualización (coordenadas en canvas)
+        const posicionesCanvas = {
+            TUN: { x: 400, y: 350 },
+            DUI: { x: 650, y: 200 },
+            SOG: { x: 750, y: 250 },
+            PAI: { x: 550, y: 250 },
+            CHI: { x: 150, y: 300 },
+            VLE: { x: 250, y: 400 },
+            MON: { x: 150, y: 450 },
+            RAM: { x: 400, y: 500 },
+            SAM: { x: 350, y: 450 },
+            TIB: { x: 700, y: 300 },
+            NOB: { x: 700, y: 220 },
+            FIR: { x: 750, y: 350 },
+            GUA: { x: 500, y: 600 },
+            SOR: { x: 450, y: 300 },
+            CUI: { x: 600, y: 350 }
+        };
+
+        // Cargar datos desde el API
+        async function cargarDatos() {
+            const urlInput = document.getElementById('apiUrl');
+            apiBaseUrl = urlInput.value;
+            
+            document.getElementById('loadingMsg').style.display = 'block';
+            canvas.style.opacity = '0.3';
+
+            try {
+                // Obtener municipios
+                const resMunicipios = await fetch(`${apiBaseUrl}/municipios`);
+                if (!resMunicipios.ok) throw new Error('Error al cargar municipios');
+                const dataMunicipios = await resMunicipios.json();
+                
+                municipios = {};
+                let totalConexiones = 0;
+                
+                // Procesar municipios y obtener sus conexiones
+                for (let codigo in dataMunicipios) {
+                    const mun = dataMunicipios[codigo];
+                    municipios[codigo] = {
+                        codigo: codigo,
+                        nombre: mun.nombre,
+                        poblacion: mun.poblacion,
+                        latitud: mun.latitud,
+                        longitud: mun.longitud,
+                        x: posicionesCanvas[codigo]?.x || 400,
+                        y: posicionesCanvas[codigo]?.y || 350,
+                        esCapital: codigo === 'TUN'
+                    };
+
+                    // Obtener conexiones
+                    const resConexiones = await fetch(`${apiBaseUrl}/municipios/${codigo}/conexiones`);
+                    if (resConexiones.ok) {
+                        const conns = await resConexiones.json();
+                        conns.forEach(conn => {
+                            // Evitar duplicados
+                            if (!conexiones.some(c => 
+                                (c.origen === conn.origen && c.destino === conn.destino) ||
+                                (c.origen === conn.destino && c.destino === conn.origen)
+                            )) {
+                                conexiones.push({
+                                    origen: conn.origen,
+                                    destino: conn.destino,
+                                    distancia: conn.distancia,
+                                    tipoVia: conn.tipoVia
+                                });
+                                totalConexiones++;
+                            }
+                        });
+                    }
+                }
+
+                // Actualizar UI
+                document.getElementById('totalMunicipios').textContent = Object.keys(municipios).length;
+                document.getElementById('totalConexiones').textContent = totalConexiones;
+                
+                inicializarSelects();
+                document.getElementById('loadingMsg').style.display = 'none';
+                canvas.style.opacity = '1';
+                
+                document.getElementById('origenSelect').disabled = false;
+                document.getElementById('destinoSelect').disabled = false;
+                document.getElementById('calcularBtn').disabled = false;
+                
+                dibujarGrafo();
+                
+                alert('✅ Datos cargados correctamente desde el API');
+                
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('loadingMsg').innerHTML = 
+                    `<div class="error">❌ Error al conectar con el API: ${error.message}<br><br>
+                    Asegúrate de que Spring Boot esté corriendo en ${apiBaseUrl}</div>`;
+            }
+        }
+
+        // Inicializar selects con municipios
+        function inicializarSelects() {
+            const origenSelect = document.getElementById('origenSelect');
+            const destinoSelect = document.getElementById('destinoSelect');
+            
+            origenSelect.innerHTML = '<option value="">Seleccionar...</option>';
+            destinoSelect.innerHTML = '<option value="">Seleccionar...</option>';
+            
+            for (let codigo in municipios) {
+                origenSelect.innerHTML += `<option value="${codigo}">${municipios[codigo].nombre}</option>`;
+                destinoSelect.innerHTML += `<option value="${codigo}">${municipios[codigo].nombre}</option>`;
+            }
+        }
+
+        // Dibujar el grafo
+        function dibujarGrafo() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            if (Object.keys(municipios).length === 0) {
+                ctx.fillStyle = '#95a5a6';
+                ctx.font = '20px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('Conecta con el API para ver el mapa', canvas.width/2, canvas.height/2);
+                return;
+            }
+
+            // Dibujar conexiones
+            conexiones.forEach(conn => {
+                const origen = municipios[conn.origen];
+                const destino = municipios[conn.destino];
+                
+                if (!origen || !destino) return;
+                
+                ctx.beginPath();
+                ctx.moveTo(origen.x, origen.y);
+                ctx.lineTo(destino.x, destino.y);
+                
+                // Color según tipo de vía
+                if (conn.tipoVia === "Principal") {
+                    ctx.strokeStyle = '#e74c3c';
+                    ctx.lineWidth = 3;
+                } else if (conn.tipoVia === "Secundaria") {
+                    ctx.strokeStyle = '#f39c12';
+                    ctx.lineWidth = 2;
+                } else {
+                    ctx.strokeStyle = '#95a5a6';
+                    ctx.lineWidth = 1.5;
+                }
+                
+                ctx.stroke();
+
+                // Dibujar distancia
+                const midX = (origen.x + destino.x) / 2;
+                const midY = (origen.y + destino.y) / 2;
+                ctx.fillStyle = '#2c3e50';
+                ctx.font = 'bold 11px Arial';
+                ctx.fillText(`${conn.distancia}km`, midX, midY);
+            });
+
+            // Dibujar ruta si existe
+            if (rutaActual && rutaActual.length > 1) {
+                for (let i = 0; i < rutaActual.length - 1; i++) {
+                    const origenCod = Object.keys(municipios).find(k => 
+                        municipios[k].nombre === rutaActual[i]
+                    );
+                    const destinoCod = Object.keys(municipios).find(k => 
+                        municipios[k].nombre === rutaActual[i + 1]
+                    );
+                    
+                    if (origenCod && destinoCod) {
+                        const origen = municipios[origenCod];
+                        const destino = municipios[destinoCod];
+                        
+                        ctx.beginPath();
+                        ctx.moveTo(origen.x, origen.y);
+                        ctx.lineTo(destino.x, destino.y);
+                        ctx.strokeStyle = '#27ae60';
+                        ctx.lineWidth = 6;
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            // Dibujar nodos
+            for (let codigo in municipios) {
+                const mun = municipios[codigo];
+                
+                const enRuta = rutaActual && rutaActual.includes(mun.nombre);
+                
+                ctx.beginPath();
+                ctx.arc(mun.x, mun.y, mun.esCapital ? 12 : 8, 0, 2 * Math.PI);
+                
+                if (mun.esCapital) {
+                    ctx.fillStyle = '#e67e22';
+                    ctx.fill();
+                    ctx.strokeStyle = '#d35400';
+                    ctx.lineWidth = 3;
+                    ctx.stroke();
+                } else if (enRuta) {
+                    ctx.fillStyle = '#27ae60';
+                    ctx.fill();
+                    ctx.strokeStyle = '#229954';
+                    ctx.lineWidth = 3;
+                    ctx.stroke();
+                } else {
+                    ctx.fillStyle = '#3498db';
+                    ctx.fill();
+                    ctx.strokeStyle = '#2980b9';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                }
+
+                // Nombre del municipio
+                ctx.fillStyle = '#2c3e50';
+                ctx.font = mun.esCapital ? 'bold 13px Arial' : 'bold 11px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(mun.nombre, mun.x, mun.y - 15);
+            }
+        }
+
+        // Calcular ruta usando el API
+        async function calcularRuta() {
+            const origen = document.getElementById('origenSelect').value;
+            const destino = document.getElementById('destinoSelect').value;
+
+            if (!origen || !destino) {
+                alert('Por favor selecciona origen y destino');
+                return;
+            }
+
+            if (origen === destino) {
+                alert('El origen y destino deben ser diferentes');
+                return;
+            }
+
+            try {
+                const res = await fetch(`${apiBaseUrl}/ruta?origen=${origen}&destino=${destino}`);
+                if (!res.ok) throw new Error('Error al calcular ruta');
+                
+                const data = await res.json();
+                rutaActual = data.municipios;
+
+                // Mostrar información
+                const infoPanel = document.getElementById('infoRuta');
+                const rutaInfo = document.getElementById('rutaInfo');
+                
+                rutaInfo.innerHTML = `
+                    <strong>Ruta:</strong> ${data.municipios.join(' → ')}<br>
+                    <strong>Distancia total:</strong> ${data.distanciaTotal.toFixed(1)} km<br>
+                    <strong>Municipios:</strong> ${data.municipios.length}<br>
+                    <strong>Descripción:</strong> ${data.descripcion}
+                `;
+                
+                infoPanel.style.display = 'block';
+                dibujarGrafo();
+                
+            } catch (error) {
+                alert('❌ Error al calcular ruta: ' + error.message);
+            }
+        }
+
+        function limpiarRuta() {
+            rutaActual = null;
+            document.getElementById('origenSelect').value = '';
+            document.getElementById('destinoSelect').value = '';
+            document.getElementById('infoRuta').style.display = 'none';
+            dibujarGrafo();
+        }
+
+        // Interacción con el canvas
+        canvas.addEventListener('click', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            for (let codigo in municipios) {
+                const mun = municipios[codigo];
+                const dist = Math.sqrt((x - mun.x) ** 2 + (y - mun.y) ** 2);
+                
+                if (dist < 15) {
+                    alert(`📍 ${mun.nombre}\n👥 Población: ${mun.poblacion.toLocaleString()} habitantes\n🌍 Lat: ${mun.latitud.toFixed(4)}, Lon: ${mun.longitud.toFixed(4)}\n${mun.esCapital ? '⭐ Capital del Departamento' : ''}`);
+                    break;
+                }
+            }
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            let encontrado = false;
+            for (let codigo in municipios) {
+                const mun = municipios[codigo];
+                const dist = Math.sqrt((x - mun.x) ** 2 + (y - mun.y) ** 2);
+                
+                if (dist < 15) {
+                    canvas.style.cursor = 'pointer';
+                    encontrado = true;
+                    break;
+                }
+            }
+            
+            if (!encontrado) {
+                canvas.style.cursor = 'default';
+            }
+        });
+
+        // Cargar datos al iniciar
+        window.addEventListener('load', () => {
+            dibujarGrafo(); // Mostrar mensaje inicial
+        });
+    </script>
+</body>
+</html>
