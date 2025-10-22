@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Mapa de Boyacá</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    #map { height: 100vh; width: 100%; }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+
+  <!-- ✅ Leaflet -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- ✅ Turf.js (necesario para polygon(), difference(), etc.) -->
+  <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
+
+  <script>
+    var map = L.map('map').setView([5.5, -73.4], 8);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    fetch('boyaca_4326.geojson')
+      .then(res => res.json())
+      .then(boyacaGeoJSON => {
+        var world = turf.polygon([[[-180, -90], [-180, 90], [180, 90], [180, -90], [-180, -90]]]);
+        var mask = turf.difference(world, boyacaGeoJSON.features[0]);
+
+        L.geoJSON(boyacaGeoJSON, { style: { color: 'red', weight: 2 } }).addTo(map);
+
+        map.fitBounds(L.geoJSON(boyacaGeoJSON).getBounds());
+      });
+  </script>
+</body>
+</html>

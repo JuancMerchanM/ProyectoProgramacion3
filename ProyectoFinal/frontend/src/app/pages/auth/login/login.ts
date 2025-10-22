@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { AuthService } from '../services/auth';
-import { InputField } from "../input-field/input-field";
-import { AnimatedButton } from "../animated-button/animated-button";
+import { AuthService } from '../../../services/auth';
+import { InputField } from "@shared/input-field/input-field";
+import { AnimatedButton } from "@shared/animated-button/animated-button";
 
 @Component({
   selector: 'app-login',
@@ -12,11 +12,17 @@ import { AnimatedButton } from "../animated-button/animated-button";
   styleUrls: ['./login.css']
 })
 export class LoginComponent {
+  @Output() createAccount = new EventEmitter<void>();
   username = '';
   password = '';
   constructor(private authService: AuthService) {}
 
   onLogin() {
     this.authService.login(this.username, this.password);
+  }
+
+  onCreateAccount(event: Event) {
+    event.preventDefault();
+    this.createAccount.emit();
   }
 }

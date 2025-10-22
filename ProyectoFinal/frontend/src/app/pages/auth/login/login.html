@@ -1,10 +1,9 @@
 <div class="container">
-  <p class="title">Iniciar sesion</p>
   <form class="form" action="">
+    <p class="signin">Not Account? <a href="#" (click)="onCreateAccount($event)">Create one!</a></p>
     <app-input-field label="Email" id="email" name="email" type="email" [required]="true"/>
     <app-input-field label="Password" id="password" name="password" type="password" [required]="true"/>
 
     <app-animated-button text="Login" (clicked)="onLogin()" />
-    <p class="signin">Already have an account ? <a href="#">Sign in</a> </p>
   </form>
 </div>
