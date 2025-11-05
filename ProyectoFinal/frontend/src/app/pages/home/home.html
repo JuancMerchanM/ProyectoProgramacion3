@@ -1,1 +1,58 @@
-<p>home works!</p>
+<div class="home-container">
+
+    <!-- MAPA -->
+    <div class="map-container">
+        <app-mostrar-mapa />
+    </div>
+
+    <!-- PANEL LATERAL -->
+    <div class="side-panel" [class.expanded]="panelOpen">
+
+        <!-- BOTONES DEL PANEL -->
+        <div class="panel-buttons">
+            <button (click)="togglePanel('user')">
+                <img src="userProfile-icon.png" alt="user profile">
+                <span class="tooltip">User profile</span>
+            </button>
+            <button (click)="togglePanel('posts')">
+                <img src="posts-icon.png" alt="posts">
+                <span class="tooltip">Posts</span>
+            </button>
+            <button (click)="togglePanel('createRoute')">
+                <img src="add-icon.png" alt="create route">
+                <span class="tooltip">Create route</span>
+            </button>
+            <button (click)="togglePanel('waterAttraction')">
+                <img src="water-attraction-icon.png" alt="marker: water attraction">
+                <span class="tooltip">Water attraction</span>
+            </button>
+        </div>
+
+        <!-- CONTENIDO EXPANDIBLE -->
+        @if(panelOpen){
+        <div class="panel-content">
+
+            @if (activePanel === 'mapa') {
+            <h3>Configuración de Mapa</h3>
+            <p>Opciones de mapa aquí...</p>
+            }
+
+            @if (activePanel === 'marcadores') {
+            <h3>Marcadores</h3>
+            <p>Configurar marcadores...</p>
+            }
+
+            @if (activePanel === 'rutas') {
+            <h3>Rutas</h3>
+            <p>Opciones para rutas...</p>
+            }
+
+            @if (activePanel === 'capas') {
+            <h3>Capas</h3>
+            <p>Opciones de capas...</p>
+            }
+
+        </div>
+        }
+    </div>
+</div>

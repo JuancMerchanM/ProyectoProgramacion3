@@ -27,6 +27,9 @@ yarn-error.log
 !.vscode/launch.json
 !.vscode/extensions.json
 .history/*
+src/app/autenticacion/
+src/app/gestion-materias
+src/app/gestion-estudiantes
 
 # Miscellaneous
 /.angular/cache

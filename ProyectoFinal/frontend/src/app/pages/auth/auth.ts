@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
-import { LoginComponent } from './login/login';
-import { Signin } from './signin/signin';
+import { LoginComponent } from '../../authentication/login/login';
+import { CrearUsuario } from '../../gestion-usuario/crear-usuario/crear-usuario';
 import Carousel from "@shared/carousel/carousel";
 import { CommonModule } from '@angular/common';
 
 
 @Component({
   selector: 'app-auth',
-  imports: [LoginComponent, Carousel, Signin, CommonModule],
+  imports: [LoginComponent, Carousel, CrearUsuario, CommonModule],
   templateUrl: './auth.html',
   styleUrl: './auth.css'
 })

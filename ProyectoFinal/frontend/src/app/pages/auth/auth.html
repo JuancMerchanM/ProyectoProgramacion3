@@ -1,8 +1,11 @@
 <div class="container">
     <div class="left">
         <img src="Logo.png" alt="" class="logo">
-        <app-login *ngIf="showLogin" (createAccount)="togglePanel()" />
-        <app-signin *ngIf="!showLogin" (goToLogin)="togglePanel()" />
+        @if(showLogin){
+            <app-login (createAccount)="togglePanel()" />
+        }@else{
+            <app-crear-usuario (goToLogin)="togglePanel()" />
+        }
     </div>
     <div class="right">
         <app-carousel style="width: 70%;"/>
