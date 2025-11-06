@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MostrarMapa } from './mostrar-mapa';
+import { CreateUser } from './create-user';
 
-describe('MostrarMapa', () => {
-  let component: MostrarMapa;
-  let fixture: ComponentFixture<MostrarMapa>;
+describe('CrearUsuario', () => {
+  let component: CreateUser;
+  let fixture: ComponentFixture<CreateUser>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MostrarMapa]
+      imports: [CreateUser]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(MostrarMapa);
+    fixture = TestBed.createComponent(CreateUser);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

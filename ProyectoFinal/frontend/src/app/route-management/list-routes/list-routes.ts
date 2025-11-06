@@ -1,12 +1,12 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
-  selector: 'app-listar-rutas',
+  selector: 'app-list-routes',
   imports: [],
-  templateUrl: './listar-rutas.html',
-  styleUrl: './listar-rutas.css'
+  templateUrl: './list-routes.html',
+  styleUrl: './list-routes.css'
 })
-export class ListarRutas {
+export class ListRoutes {
   @Input() name!: string;
   @Input() date!: string;
   @Input() privacy!: string;

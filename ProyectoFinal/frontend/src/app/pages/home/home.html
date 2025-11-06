@@ -2,7 +2,7 @@
 
     <!-- MAPA -->
     <div class="map-container">
-        <app-mostrar-mapa />
+        <app-show-map />
     </div>
 
     <!-- PANEL LATERAL -->
@@ -32,24 +32,16 @@
         @if(panelOpen){
         <div class="panel-content">
 
-            @if (activePanel === 'mapa') {
-            <h3>Configuración de Mapa</h3>
-            <p>Opciones de mapa aquí...</p>
+            @if (activePanel === 'user') {
+                <app-user-list/>
             }
 
-            @if (activePanel === 'marcadores') {
-            <h3>Marcadores</h3>
-            <p>Configurar marcadores...</p>
+            @if (activePanel === 'posts') {
+                <app-list-posts/>
             }
 
-            @if (activePanel === 'rutas') {
-            <h3>Rutas</h3>
-            <p>Opciones para rutas...</p>
-            }
-
-            @if (activePanel === 'capas') {
-            <h3>Capas</h3>
-            <p>Opciones de capas...</p>
+            @if (activePanel === 'createRoute') {
+                <app-create-route/>
             }
 
         </div>

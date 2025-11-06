@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MostrarMarcadores } from './mostrar-marcadores';
+import { CreatePost } from './create-post';
 
-describe('MostrarMarcadores', () => {
-  let component: MostrarMarcadores;
-  let fixture: ComponentFixture<MostrarMarcadores>;
+describe('CreatePost', () => {
+  let component: CreatePost;
+  let fixture: ComponentFixture<CreatePost>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MostrarMarcadores]
+      imports: [CreatePost]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(MostrarMarcadores);
+    fixture = TestBed.createComponent(CreatePost);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

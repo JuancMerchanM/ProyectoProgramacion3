@@ -2,12 +2,12 @@ import { Component } from '@angular/core';
 import * as L from 'leaflet';
 import * as turf from '@turf/turf';
 @Component({
-  selector: 'app-mostrar-mapa',
+  selector: 'app-show-map',
   imports: [],
-  templateUrl: './mostrar-mapa.html',
-  styleUrl: './mostrar-mapa.css'
+  templateUrl: './show-map.html',
+  styleUrl: './show-map.css'
 })
-export class MostrarMapa {
+export class ShowMap {
   map!: L.Map;
 
   ngAfterViewInit(): void {

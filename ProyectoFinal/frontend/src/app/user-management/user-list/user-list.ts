@@ -2,12 +2,12 @@ import { Component } from '@angular/core';
 import { InputBox } from "app/commons/input-box/input-box";
 
 @Component({
-  selector: 'app-listar-datos',
+  selector: 'app-user-list',
   imports: [InputBox],
-  templateUrl: './listar-datos.html',
-  styleUrl: './listar-datos.css'
+  templateUrl: './user-list.html',
+  styleUrl: './user-list.css'
 })
-export class ListarDatos {
+export class UserList {
   username: string = "MyUsername";
   email: string = "asdfasd@gmail.com";
   password: string = "**********";

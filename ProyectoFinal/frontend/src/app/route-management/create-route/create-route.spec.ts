@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CrearRuta } from './crear-ruta';
+import { CreateRoute } from './create-route';
 
 describe('CrearRuta', () => {
-  let component: CrearRuta;
-  let fixture: ComponentFixture<CrearRuta>;
+  let component: CreateRoute;
+  let fixture: ComponentFixture<CreateRoute>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CrearRuta]
+      imports: [CreateRoute]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(CrearRuta);
+    fixture = TestBed.createComponent(CreateRoute);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

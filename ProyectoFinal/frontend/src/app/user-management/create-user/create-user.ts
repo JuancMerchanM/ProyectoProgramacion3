@@ -4,12 +4,12 @@ import { AnimatedButton } from '@shared/animated-button/animated-button';
 import { InputField } from '@shared/input-field/input-field';
 
 @Component({
-  selector: 'app-crear-usuario',
+  selector: 'app-create-user',
   imports: [FormsModule, InputField, AnimatedButton],
-  templateUrl: './crear-usuario.html',
-  styleUrl: './crear-usuario.css'
+  templateUrl: './create-user.html',
+  styleUrl: './create-user.css'
 })
-export class CrearUsuario {
+export class CreateUser {
 
   user = {
     email: '',

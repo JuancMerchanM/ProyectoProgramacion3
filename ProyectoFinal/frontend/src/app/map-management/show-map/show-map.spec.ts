@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ListarDatos } from './listar-datos';
+import { ShowMap } from './show-map';
 
-describe('ListarDatos', () => {
-  let component: ListarDatos;
-  let fixture: ComponentFixture<ListarDatos>;
+describe('MostrarMapa', () => {
+  let component: ShowMap;
+  let fixture: ComponentFixture<ShowMap>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ListarDatos]
+      imports: [ShowMap]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ListarDatos);
+    fixture = TestBed.createComponent(ShowMap);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
