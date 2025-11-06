@@ -1,13 +1,20 @@
 .home-container {
-  position: relative;
-  width: 100%;
-  height: 100vh;
   display: flex;
+  flex-direction: row;
+  height: 100vh; /* fuerza altura total de la ventana */
+  width: 100%;
 }
 
 /* MAP CONTAINER */
 .map-container {
   flex: 1;
+  display: flex;
+}
+
+app-mostrar-mapa {
+  display: block;      /* <- Clave */
+  width: 100%;         /* <- Expande al contenedor */
+  height: 100%;        /* <- Da altura al #map interno */
 }
 
 /* LATERAL PANEL */
