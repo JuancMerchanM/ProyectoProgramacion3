@@ -1,15 +1,13 @@
 import { Component, Input } from '@angular/core';
+import { SimpleRoute } from 'app/interfaces/SimpleRoute.interface';
+import { RouteSimpleCard } from "@shared/route-simple-card/route-simple-card";
 
 @Component({
   selector: 'app-list-routes',
-  imports: [],
+  imports: [RouteSimpleCard],
   templateUrl: './list-routes.html',
   styleUrl: './list-routes.css'
 })
 export class ListRoutes {
-  @Input() name!: string;
-  @Input() date!: string;
-  @Input() privacy!: string;
-  @Input() distance!: number;
-  @Input() spots!: number;
+  @Input() routes: SimpleRoute[] = [];
 }

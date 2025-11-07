@@ -1,0 +1,57 @@
+.route-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  font-family: sans-serif;
+  border-bottom: 1px solid #ddd;
+  gap: 10px;
+}
+
+.left {
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.sub-info {
+  font-size: 14px;
+  color: #666;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.dot {
+  font-weight: bold;
+}
+
+.center {
+  font-size: 14px;
+  color: #444;
+  border-left: 1px solid #aaa;
+  padding-left: 10px;
+}
+
+.right {
+  display: flex;
+  align-items: center;
+}
+
+.eye-icon {
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+  object-fit: contain;
+  opacity: 0.8;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.eye-icon:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}

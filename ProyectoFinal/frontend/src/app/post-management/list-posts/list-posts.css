@@ -1,0 +1,44 @@
+.list-posts-container {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+    gap: 10px;
+    font-size: 14px;
+    color: #666;
+}
+
+.two-columns {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    /* Se adapta al contenedor padre */
+    padding: 0 8px;
+    /* Espaciado horizontal */
+}
+
+.title {
+    color: black;
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+.divider {
+    border: none;
+    border-bottom: 1px solid #888;
+    width: 100%;
+    margin: 4px 0 0;
+}
+
+.icon {
+    font-size: 1.5rem;
+    cursor: pointer;
+    user-select: none;
+}
+
+app-markbook-simple-card{
+    width: 90%;
+}

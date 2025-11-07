@@ -18,28 +18,31 @@ app-mostrar-mapa {
 }
 
 /* LATERAL PANEL */
+/* PANEL PRINCIPAL */
 .side-panel {
-  width: 60px;
-  background: #ffffff;
-  border-left: 1px solid #ddd;
   display: flex;
-  flex-direction: column;
+  flex-direction: row; /* botones y contenido lado a lado */
+  width: 60px;
+  background: #fff;
+  border-left: 1px solid #ddd;
   transition: width .3s ease;
-  height: 100vh;
+  box-shadow: -2px 0 6px rgba(0, 0, 0, 0.15);
   overflow: hidden;
-  box-shadow: -2px 0 6px rgba(0,0,0,0.15);
 }
 
-/* EXPANDED STATE */
 .side-panel.expanded {
-  width: 280px;
+  width: 30%; /* ancho cuando se expande */
 }
 
-/* BUTTONS COLUMN */
+/* BOTONES LATERALES */
 .panel-buttons {
   display: flex;
   flex-direction: column;
-  padding: 4px;
+  align-items: center;
+  width: 60px; /* mantiene su tamaño fijo */
+  border-right: 1px solid #eee;
+  background: #fff;
+  z-index: 2;
 }
 
 .panel-buttons button {

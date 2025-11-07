@@ -1,0 +1,18 @@
+<div class="markbook-card">
+    @if (data) {
+    <img src="{{data.image}}" alt="Lugar colorido" class="place-image">
+
+    <div class="markbook-content">
+        <div class="markbook-info">
+            <h2>{{data.name}}</h2>
+            <div class="markbook-rating">
+                <span class="stars">★★★★★</span>
+                <span class="stars filled" [style.width.%]="data.rating">★★★★★</span>
+            </div>
+            <p>{{data.town}}<br>{{data.category}}</p>
+        </div>
+    </div>
+    }@else {
+    <p>Sin datos de marcador</p>
+    }
+</div>

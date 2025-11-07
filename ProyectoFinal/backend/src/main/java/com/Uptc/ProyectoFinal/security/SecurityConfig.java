@@ -25,7 +25,8 @@ import com.nimbusds.jose.jwk.source.ImmutableSecret;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    private static final String SECRET_KEY = System.getenv("JWT_SECRET");
+    @Value("${app.secertkey}")
+    private String SECRET_KEY;
 
     @Bean
     @Primary

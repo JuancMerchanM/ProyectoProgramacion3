@@ -1,1 +1,26 @@
-<p>list-posts works!</p>
+<div class="list-posts-container">
+    <div class="two-columns">
+        <span class="title">Ultimas publicaciones</span>
+        <button><img src="post-create-icon.png" alt="Postea una ruta"/></button>
+    </div>
+    <hr class="divider">
+    @for(post of posts; track post.name){
+    <div class="two-columns">
+        <span class="title">Ruta {{post.name}}</span>
+        <span>Distancia: {{post.distance}}km</span>
+    </div>
+    <span>{{post.description}}</span>
+    <app-markbook-simple-card [data]="post.spots.at(0) " />
+    @if(post.spots.length>1){
+    <div class="two-columns">
+        <span>{{post.numSpots}} Lugares</span>
+        <button (click)="showAllPosts()">V</button>
+    </div>
+    }
+    @if(show){
+    @for (spot of post.spots.slice(1); track spot.name) {
+    <app-markbook-simple-card [data]="spot" />
+    }
+    }
+    }
+</div>

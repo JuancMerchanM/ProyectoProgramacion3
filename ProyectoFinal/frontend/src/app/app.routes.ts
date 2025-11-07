@@ -7,18 +7,18 @@ export const routes: Routes = [
   { path: '', redirectTo: 'auth', pathMatch: 'full' },
   { path: 'auth', component: Auth },
   { path: 'home', component: Home },
-  {
-    path: 'autenticacion',
-    loadChildren: () => import('./autenticacion/autenticacion-module').then((m) => m.AutenticacionModule)
-  },
-  {
-    path: 'gestion-estudiantes',
-    loadChildren: () => import('./gestion-estudiantes/gestion-estudiantes-module').then((m) => m.GetionEstudiantesModule)
-  },
-  {
-    path: 'gestion-materias',
-    loadChildren: () => import('./gestion-materias/gestion-materias-module').then((m) => m.GestionMateriasModule)
-  },
+  // {
+  //   path: 'autenticacion',
+  //   loadChildren: () => import('./autenticacion/autenticacion-module').then((m) => m.AutenticacionModule)
+  // },
+  // {
+  //   path: 'gestion-estudiantes',
+  //   loadChildren: () => import('./gestion-estudiantes/gestion-estudiantes-module').then((m) => m.GetionEstudiantesModule)
+  // },
+  // {
+  //   path: 'gestion-materias',
+  //   loadChildren: () => import('./gestion-materias/gestion-materias-module').then((m) => m.GestionMateriasModule)
+  // },
 ];
 
 @NgModule({
