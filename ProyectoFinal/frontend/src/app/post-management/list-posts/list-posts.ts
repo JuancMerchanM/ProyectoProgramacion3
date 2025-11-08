@@ -10,14 +10,15 @@ import { MarkbookSimpleCard } from "@shared/markbook-simple-card/markbook-simple
   styleUrl: './list-posts.css'
 })
 export class ListPosts {
- @Input() posts!: Post[];
+  @Input() posts!: Post[];
   show: boolean = false;
+  expandedPosts = new Set<string>();
 
- showAllPosts() {
-    if (this.show === true) {
-      this.show = !this.show;
+  togglePostExpansion(postName: string): void {
+    if (this.expandedPosts.has(postName)) {
+      this.expandedPosts.delete(postName);
     } else {
-      this.show = true;
+      this.expandedPosts.add(postName);
     }
   }
 }

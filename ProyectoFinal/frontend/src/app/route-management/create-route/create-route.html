@@ -1,1 +1,33 @@
-<p>crear-ruta works!</p>
+<div class="form-group-inline">
+    <input id="startPoint" type="text" placeholder="Mi nueva ruta" [(ngModel)]="routeName" name="routeName" required />
+</div>
+<div class="form-group-inline">
+    <label for="startPoint">Punto de partida</label>
+    <input id="startPoint" type="text" placeholder="Cll 90B #3ab-245" [(ngModel)]="startPoint" name="startPoint"
+        required />
+</div>
+<div class="two-columns" style="margin-top: 20px;">
+    <span>Luegares en la ruta</span>
+    <span>Distancia: {{distance}}km</span>
+</div>
+<hr>
+<div class="spots-container">
+    <div class="two-columns">
+        <app-markbook-simple-card />
+        <button><img src="remove-icon.png" alt="Eliminar"></button>
+    </div>
+</div>
+<div class="two-columns" style="margin-top: 20px;">
+    <span class="title">Recomendaciones</span>
+    <button><img src="filter-icon.png" alt="Postea una ruta" class="icon" /></button>
+</div>
+<hr>
+<div class="filter-container">
+    <button class="filter">Cascada</button>
+</div>
+<div class="suggested-spots">
+    <div class="two-columns">
+        <app-markbook-simple-card />
+        <button><img src="append-icon.png" alt="Agregar"></button>
+    </div>
+</div>

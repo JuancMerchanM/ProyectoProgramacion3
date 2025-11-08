@@ -1,4 +1,4 @@
-.list-posts-container {
+.container, .list-posts-container, .expanded-posts {
     display: flex;
     justify-content: space-between;
     flex-direction: column;
@@ -8,6 +8,22 @@
     gap: 10px;
     font-size: 14px;
     color: #666;
+}
+
+.container{
+    height: 100%;
+}
+
+.list-posts-container{
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 8px 12px 8px 8px;
+    box-sizing: border-box;
+}
+
+.list-posts-container > * {
+  flex-shrink: 0;
 }
 
 .two-columns {
@@ -33,12 +49,43 @@
     margin: 4px 0 0;
 }
 
+button{
+    padding: 0px;
+    background: none;
+    border: none;
+    width: 28px;
+}
+
 .icon {
-    font-size: 1.5rem;
     cursor: pointer;
     user-select: none;
+    width: 100%;
 }
 
 app-markbook-simple-card{
     width: 90%;
+}
+
+.expanded-posts{
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.list-posts-container::-webkit-scrollbar, .expanded-posts::-webkit-scrollbar {
+  width: 8px;
+}
+
+.list-posts-container::-webkit-scrollbar-track, .expanded-posts::-webkit-scrollbar-track {
+  background: #f2f2f2;
+  border-radius: 4px;
+}
+
+.list-posts-container::-webkit-scrollbar-thumb, .expanded-posts::-webkit-scrollbar-thumb {
+  background: #525252;
+  border-radius: 4px;
+  transition: background 0.3s;
+}
+
+.list-posts-container.expanded-posts::-webkit-scrollbar-thumb:hover, .expanded-posts::-webkit-scrollbar-thumb:hover {
+  background: #888;
 }

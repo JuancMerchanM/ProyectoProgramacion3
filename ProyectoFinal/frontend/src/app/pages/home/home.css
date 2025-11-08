@@ -17,6 +17,11 @@ app-mostrar-mapa {
   height: 100%;        /* <- Da altura al #map interno */
 }
 
+app-list-posts{
+  display: block;
+  height: 100%;
+}
+
 /* LATERAL PANEL */
 /* PANEL PRINCIPAL */
 .side-panel {

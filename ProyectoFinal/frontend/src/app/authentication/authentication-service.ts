@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
   providedIn: 'root'
 })
 export class AuthenticationService {
-  private apiUrl = 'http://localhost:8035/api/auth';
+  private apiUrl = 'http://localhost:8035/auth';
 
   // Estado reactivo con signals
   isLoggedIn = signal(false);

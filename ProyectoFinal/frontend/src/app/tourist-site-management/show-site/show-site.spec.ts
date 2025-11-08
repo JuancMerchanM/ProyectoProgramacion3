@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TouristSiteList } from './tourist-site-list';
+import { TouristSiteList } from './show-site';
 
 describe('ListarDatos', () => {
   let component: TouristSiteList;
