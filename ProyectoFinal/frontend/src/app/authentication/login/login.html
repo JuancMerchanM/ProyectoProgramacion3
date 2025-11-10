@@ -1,8 +1,8 @@
 <div class="container">
   <form class="form" action="">
     <p class="signin">Not Account? <a href="#" (click)="onCreateAccount($event)">Create one!</a></p>
-    <app-input-field label="Email" id="email" name="email" type="email" [required]="true"/>
-    <app-input-field label="Password" id="password" name="password" type="password" [required]="true"/>
+    <app-input-field label="Email" id="email" name="email" type="email" [required]="true" [(ngModel)]="username"/>
+    <app-input-field label="Password" id="password" name="password" type="password" [required]="true" [(ngModel)]="password"/>
 
     <app-animated-button text="Login" (clicked)="onLogin()" />
   </form>

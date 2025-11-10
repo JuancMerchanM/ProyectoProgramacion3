@@ -25,15 +25,41 @@
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
 
-    fetch('boyaca_4326.geojson')
-      .then(res => res.json())
-      .then(boyacaGeoJSON => {
-        var world = turf.polygon([[[-180, -90], [-180, 90], [180, 90], [180, -90], [-180, -90]]]);
-        var mask = turf.difference(world, boyacaGeoJSON.features[0]);
+    var start = [5.535, -73.367]; // Tunja
+    var end = [5.634, -75.523];   // Villa de Leyva
 
-        L.geoJSON(boyacaGeoJSON, { style: { color: 'red', weight: 2 } }).addTo(map);
+    L.marker(start).addTo(map).bindPopup("Inicio: Tunja");
+    L.marker(end).addTo(map).bindPopup("Destino: Villa de Leyva");
 
-        map.fitBounds(L.geoJSON(boyacaGeoJSON).getBounds());
+    var url = `https://router.project-osrm.org/route/v1/driving/${start[1]},${start[0]};${end[1]},${end[0]}?overview=full&geometries=geojson`;
+
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        if (data.routes && data.routes.length > 0) {
+          console.log(data.routes.length)
+          var route = data.routes[0].geometry;
+
+          console.log(route);
+
+          // Dibujar la línea del recorrido
+          var routeLine = L.geoJSON(route, {
+            style: {
+              color: 'blue',
+              weight: 4,
+              opacity: 0.8
+            }
+          }).addTo(map);
+
+          // Ajustar el zoom para ver toda la ruta
+          map.fitBounds(routeLine.getBounds());
+        } else {
+          alert("No se encontró ruta.");
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        alert("Error al obtener la ruta");
       });
   </script>
 </body>

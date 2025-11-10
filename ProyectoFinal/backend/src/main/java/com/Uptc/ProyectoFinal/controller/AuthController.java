@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,9 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.Uptc.ProyectoFinal.dto.AuthResponse;
 import com.Uptc.ProyectoFinal.dto.LoginRequest;
 import com.Uptc.ProyectoFinal.dto.RegisterRequest;
+import com.Uptc.ProyectoFinal.dto.ResetPasswordRequest;
 import com.Uptc.ProyectoFinal.service.AuthService;
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/auth")
 public class AuthController {
 
@@ -36,6 +39,8 @@ public class AuthController {
 
     @PostMapping(path = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
+        System.out.println(request.getUsernameOrEmail());
+        System.out.println(request.getPassword());
         return ResponseEntity.ok(authService.login(request));
     }
 
@@ -46,10 +51,8 @@ public class AuthController {
     }
 
     @PostMapping("/reset-password")
-    public ResponseEntity<String> resetPassword(
-            @RequestParam String token,
-            @RequestParam String newPassword) {
-        authService.resetPassword(token, newPassword);
+    public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordRequest rpr) {
+        authService.resetPassword(rpr.getResetToken(), rpr.getNewPassword());
         return ResponseEntity.ok("Tu contraseña ha sido actualizada correctamente.");
     }
 
