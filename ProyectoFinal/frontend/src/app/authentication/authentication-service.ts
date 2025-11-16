@@ -12,13 +12,12 @@ export class AuthenticationService {
   isLoggedIn = signal(false);
   token = signal<string | null>(null);
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router) { }
 
   login(username: string, password: string) {
-    return  this.http.post<{ token: string; username: string }>(`${this.apiUrl}/login`, { usernameOrEmail:username, password })
+    return this.http.post<{ token: string; username: string }>(`${this.apiUrl}/login`, { usernameOrEmail: username, password })
       .subscribe({
         next: (res) => {
-          console.log(this.token);
           this.token.set(res.token);
           this.isLoggedIn.set(true);
         },
@@ -32,5 +31,9 @@ export class AuthenticationService {
     this.token.set(null);
     this.isLoggedIn.set(false);
     this.router.navigate(['/login']);
+  }
+
+  resetPassword(token: string, newPassword: string) {
+    return this.http.post(`${this.apiUrl}/reset-password`, { token, newPassword });
   }
 }

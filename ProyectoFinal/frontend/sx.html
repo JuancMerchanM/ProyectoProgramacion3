@@ -1,13 +1,18 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="utf-8" />
   <title>Mapa de Boyacá</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
-    #map { height: 100vh; width: 100%; }
+    #map {
+      height: 100vh;
+      width: 100%;
+    }
   </style>
 </head>
+
 <body>
   <div id="map"></div>
 
@@ -18,18 +23,39 @@
   <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
 
   <script>
-    var map = L.map('map').setView([5.5, -73.4], 8);
+    var map = L.map('map', { zoomDelta: 0.5, zoomSnap: 0.5 }).setView([5.668770910764556, -72.99409501913873], 8.5);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      minZoom: 8.5,
       maxZoom: 18,
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
 
-    var start = [5.535, -73.367]; // Tunja
-    var end = [5.634, -75.523];   // Villa de Leyva
+    fetch('Boyaca_4326.geojson')
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        const myPolygon = L.geoJSON(data, {
+          style: {
+            color: 'red',        // borde del polígono
+            weight: 2,           // grosor del borde
+            fillColor: 'orange', // color interno
+            fillOpacity: 0.3     // transparencia del interior
+          }
+        }).addTo(map);
 
-    L.marker(start).addTo(map).bindPopup("Inicio: Tunja");
-    L.marker(end).addTo(map).bindPopup("Destino: Villa de Leyva");
+        const bounds = myPolygon.getBounds();
+        map.fitBounds(bounds);
+        console.log(map.getBoundsZoom(bounds));
+        map.setMinZoom(map.getBoundsZoom(bounds));
+        map.setMaxBounds(bounds.pad(0.05)); // padding opcional para evitar rebotes
+      });
+
+    var start = [4.764052979916138, -73.32550128202898]; // Tunja
+    var end = [7.002248519906628, -72.10825034210478];   // Villa de Leyva
+
+    L.marker(start).addTo(map).bindPopup("Inicio: MAMBITA");
+    L.marker(end).addTo(map).bindPopup("Destino: CUBARA");
 
     var url = `https://router.project-osrm.org/route/v1/driving/${start[1]},${start[0]};${end[1]},${end[0]}?overview=full&geometries=geojson`;
 
@@ -61,6 +87,11 @@
         console.error(err);
         alert("Error al obtener la ruta");
       });
+
+
+
+
   </script>
 </body>
+
 </html>
