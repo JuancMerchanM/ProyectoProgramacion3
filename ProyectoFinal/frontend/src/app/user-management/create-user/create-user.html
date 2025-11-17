@@ -4,7 +4,7 @@
         <app-input-field [(ngModel)]="user.email" #emailField="ngModel" label="Email" id="email" name="email" type="email" [required]="true"/>
         <app-input-field [(ngModel)]="user.username" #nameField="ngModel" label="Username" id="username" name="username" [required]="true"/>
         <app-input-field [(ngModel)]="user.password" #passwordField="ngModel" label="Password" id="password" name="password" type="password" [required]="true"/>
-        <app-input-field [(ngModel)]="confirmPassword" label="Confirm password" id="conf-password" name="conf-password" type="password"
+        <app-input-field [(ngModel)]="confirmPassword" label="Confirm password" id="confirmPassword" name="confirmPassword" type="password"
             [required]="true" />
 
         <app-animated-button text="Sign in" [attr.disabled]="form.invalid ? true : null" (clicked)="onSubmit(form)"></app-animated-button>

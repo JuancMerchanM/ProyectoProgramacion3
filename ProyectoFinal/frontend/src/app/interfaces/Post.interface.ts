@@ -1,4 +1,4 @@
-import { MarkbookSimple } from "./MarkbookSimple.interface";
+import { Point } from "./Point.interface";
 
 export interface Post{
     name: string;
@@ -6,5 +6,5 @@ export interface Post{
     description: string;
     distance: number;
     numSpots: number;
-    spots: MarkbookSimple[];
+    spots: Point[];
 }

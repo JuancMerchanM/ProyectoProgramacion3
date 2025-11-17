@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ShowBookmarks } from './show-bookmarks';
+import { MarkbookSimpleCard } from './point-simple-card';
 
-describe('ShowBookmarks', () => {
-  let component: ShowBookmarks;
-  let fixture: ComponentFixture<ShowBookmarks>;
+describe('MarkbookSimpleCard', () => {
+  let component: MarkbookSimpleCard;
+  let fixture: ComponentFixture<MarkbookSimpleCard>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ShowBookmarks]
+      imports: [MarkbookSimpleCard]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ShowBookmarks);
+    fixture = TestBed.createComponent(MarkbookSimpleCard);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

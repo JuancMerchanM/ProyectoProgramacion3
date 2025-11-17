@@ -8,29 +8,21 @@ import { Router } from '@angular/router';
 export class AuthenticationService {
   private apiUrl = 'http://localhost:8035/auth';
 
-  // Estado reactivo con signals
-  isLoggedIn = signal(false);
-  token = signal<string | null>(null);
-
   constructor(private http: HttpClient, private router: Router) { }
 
   login(username: string, password: string) {
     return this.http.post<{ token: string; username: string }>(`${this.apiUrl}/login`, { usernameOrEmail: username, password })
       .subscribe({
         next: (res) => {
-          this.token.set(res.token);
-          this.isLoggedIn.set(true);
+          localStorage.setItem('token', res.token);
+          this.router.navigate(['/home']);
         },
-        error: (err) => {
-          console.error('Login failed', err);
-        }
       });
   }
 
   logout() {
-    this.token.set(null);
-    this.isLoggedIn.set(false);
-    this.router.navigate(['/login']);
+    localStorage.removeItem('token');
+    this.router.navigate(['/auth']);
   }
 
   resetPassword(token: string, newPassword: string) {

@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MarkbookSimpleCard } from "@shared/markbook-simple-card/markbook-simple-card";
+import { PointSimpleCard } from "@shared/point-simple-card/point-simple-card";
 
 @Component({
   selector: 'app-create-route',
-  imports: [FormsModule, MarkbookSimpleCard],
+  imports: [FormsModule, PointSimpleCard],
   templateUrl: './create-route.html',
   styleUrl: './create-route.css'
 })

@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Markbook } from 'app/interfaces/Markbook.interface';
+import { Point } from 'app/interfaces/Point.interface';
 import { ListRoutes } from "app/route-management/list-routes/list-routes";
 
 @Component({
@@ -9,5 +9,5 @@ import { ListRoutes } from "app/route-management/list-routes/list-routes";
   styleUrl: './show-site.css'
 })
 export class TouristSiteList {
-  @Input() markbook?: Markbook;
+  @Input() point?: Point;
 }

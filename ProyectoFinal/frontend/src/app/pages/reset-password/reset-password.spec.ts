@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MarkbookSimpleCard } from './markbook-simple-card';
+import { ResetPassword } from './reset-password';
 
-describe('MarkbookSimpleCard', () => {
-  let component: MarkbookSimpleCard;
-  let fixture: ComponentFixture<MarkbookSimpleCard>;
+describe('ResetPassword', () => {
+  let component: ResetPassword;
+  let fixture: ComponentFixture<ResetPassword>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MarkbookSimpleCard]
+      imports: [ResetPassword]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(MarkbookSimpleCard);
+    fixture = TestBed.createComponent(ResetPassword);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

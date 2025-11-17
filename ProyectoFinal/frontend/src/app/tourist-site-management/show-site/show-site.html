@@ -1,17 +1,16 @@
 <div class="container">
-    @if(markbook){
-    <img [src]="markbook.image" alt="Imagen">
+    @if(point){
+    <img [src]="point.image" alt="Imagen">
     <div class="two-columns mb-3">
-        <span class="title">{{markbook.name}}</span>
-        <span class="normal-text">{{markbook.category}}</span>
+        <span class="title">{{point.name}}</span>
+        <span class="normal-text">{{point.category}}</span>
     </div>
     <span class="mb-6">
-        Municipio {{ markbook.town }}
-        @if (markbook.lastPoint != 0) {
-        <br>Distancia a último punto: {{ markbook.lastPoint }} km
-        }
+        Municipio {{ point.municipality }}
+        <!-- @if (point.lastPoint != 0) {
+        <br>Distancia a último punto: {{ point.lastPoint }} km
+        } -->
     </span>
-    <p class="mb-6">{{markbook.description}}</p>
     <span class="title mb-6" style="font-size: 15px;">Rutas que podrian interesarte</span>
     <app-list-routes [routes]="[{ name: 'Ruta del Café Boyacense', date: '2025-03-21', privacy: 'Pública', distance: 125, spots: 8 },
       { name: 'Aventura en la Sierra Nevada', date: '2025-04-10', privacy: 'Privada', distance: 312, spots: 12 },
@@ -20,9 +19,9 @@
       { name: 'Costa Caribe Express', date: '2025-07-08', privacy: 'Pública', distance: 580, spots: 11 }]" />
     <div class="two-columns">
         <span class="title" style="font-size: 15px;">Puntuacion</span>
-        <div class="markbook-rating">
+        <div class="point-rating">
             <span class="stars">★★★★★</span>
-            <span class="stars filled" [style.width.%]="markbook.rating">★★★★★</span>
+            <span class="stars filled" [style.width.%]="point.rating">★★★★★</span>
         </div>
     </div>
     }@else {

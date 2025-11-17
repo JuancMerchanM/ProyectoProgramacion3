@@ -1,7 +1,9 @@
-import { Component, EventEmitter, Output } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, EventEmitter, inject, Output } from '@angular/core';
+import { FormsModule, NgModel } from '@angular/forms';
 import { AnimatedButton } from '@shared/animated-button/animated-button';
 import { InputField } from '@shared/input-field/input-field';
+import { User } from 'app/interfaces/User.interface';
+import { UserService } from '../user-service';
 
 @Component({
   selector: 'app-create-user',
@@ -11,25 +13,46 @@ import { InputField } from '@shared/input-field/input-field';
 })
 export class CreateUser {
 
-  user = {
+  private userService = inject(UserService);
+
+  user: User = {
     email: '',
     username: '',
     password: ''
   };
 
-  @Output() goToLogin = new EventEmitter<void>();
   confirmPassword: string = '';
+
+  @Output() goToLogin = new EventEmitter<void>();
+
+  message = '';
+  isSuccess = false;
 
   onSubmit(form: any): void {
     if (form.invalid) {
-      console.log('Formulario inválido');
-      Object.keys(form.controls).forEach(key => {
-        form.controls[key].markAsTouched();
-      });
+      Object.values(form.controls).forEach((c: any) => c.markAsTouched());
       return;
     }
 
-    console.log('Datos enviados:', this.user);
+    if (this.user.password !== this.confirmPassword) {
+      this.message = 'Passwords do not match.';
+      this.isSuccess = false;
+      return;
+    }
+
+    this.userService.createUser(this.user).subscribe({
+      next: () => {
+        this.message = 'Account created successfully!';
+        this.isSuccess = true;
+
+        setTimeout(() => this.goToLogin.emit(), 1500);
+      },
+      error: (err) => {
+        console.error(err);
+        this.message = 'Error creating account.';
+        this.isSuccess = false;
+      }
+    });
   }
 
   onGoToLogin(event: Event) {

@@ -11,7 +11,7 @@
             <span>Distancia: {{post.distance}}km</span>
         </div>
         <span>{{post.description}}</span>
-        <app-markbook-simple-card [data]="post.spots.at(0) " />
+        <app-point-simple-card [data]="post.spots.at(0) " />
         @if(post.spots.length>1){
         <div class="two-columns">
             <span>{{post.numSpots}} Lugares</span>
@@ -23,7 +23,7 @@
         <div class="expanded-posts">
             @if(expandedPosts.has(post.name)){
             @for (spot of post.spots.slice(1); track spot.name) {
-            <app-markbook-simple-card [data]="spot" />
+            <app-point-simple-card [data]="spot" />
             }
             }
         </div>
