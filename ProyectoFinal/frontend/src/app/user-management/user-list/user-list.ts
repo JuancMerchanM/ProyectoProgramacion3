@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { InputBox } from "app/commons/input-box/input-box";
 import { ListRoutes } from "app/route-management/list-routes/list-routes";
 
@@ -9,7 +9,11 @@ import { ListRoutes } from "app/route-management/list-routes/list-routes";
   styleUrl: './user-list.css'
 })
 export class UserList {
-  username: string = "MyUsername";
-  email: string = "asdfasd@gmail.com";
-  password: string = "**********";
+  @Input() username?: string;
+  @Input() email?: string;
+  @Input() lenPassword!: number;
+
+  createStars(length: number): string {
+    return '*'.repeat(length);
+  }
 }

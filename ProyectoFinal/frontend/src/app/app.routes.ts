@@ -10,7 +10,7 @@ export const routes: Routes = [
   { path: '', redirectTo: 'auth', pathMatch: 'full' },
   { path: 'auth', component: Auth, canActivate: [noAuthGuard]},
   { path: 'home', component: Home , canActivate: [authGuard]},
-  { path: 'reset-password/:token', component: ResetPassword}
+  { path: 'reset-password', component: ResetPassword}
 ];
 
 @NgModule({

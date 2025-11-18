@@ -22,7 +22,11 @@
                 <img src="add-icon.png" alt="create route">
                 <span class="tooltip">Create route</span>
             </button>
-            <button (click)="togglePanel('waterAttraction')">
+            <button (click)="logout()">
+                <img src="logout.png" alt="cerrar sesion">
+                <span class="tooltip">Cerrar sesion</span>
+            </button>
+            <button (click)="filterCategory('water')">
                 <img src="water-attraction-icon.png" alt="marker: water attraction">
                 <span class="tooltip">Water attraction</span>
             </button>
@@ -31,7 +35,7 @@
         <!-- CONTENIDO EXPANDIBLE -->
         <div class="panel-content" [class.visible]="panelOpen">
             @if (activePanel === 'user') {
-            <app-user-list />
+            <app-user-list [username]="user?.username" [email]="user?.email" [lenPassword]="user?.lenPassword ?? 0"/>
             }
             @if (activePanel === 'posts') {
             <app-list-posts [posts]="[

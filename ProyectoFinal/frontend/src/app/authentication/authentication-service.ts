@@ -1,6 +1,9 @@
 import { Injectable, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { catchError, throwError, tap } from 'rxjs';
+import { LoggedInUser } from 'app/interfaces/LoggedInUser.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -8,24 +11,44 @@ import { Router } from '@angular/router';
 export class AuthenticationService {
   private apiUrl = 'http://localhost:8035/auth';
 
-  constructor(private http: HttpClient, private router: Router) { }
+  user = signal<LoggedInUser | null>(null);
 
-  login(username: string, password: string) {
-    return this.http.post<{ token: string; username: string }>(`${this.apiUrl}/login`, { usernameOrEmail: username, password })
-      .subscribe({
-        next: (res) => {
-          localStorage.setItem('token', res.token);
-          this.router.navigate(['/home']);
-        },
-      });
+  constructor(private http: HttpClient, private router: Router) {
+    const saved = localStorage.getItem('user');
+    if (saved) {
+      this.user.set(JSON.parse(saved));
+    }
+   }
+
+  login(usernameOrEmail: string, password: string) {
+    return this.http.post<{ token: string; username: string, email: string }>(`${this.apiUrl}/login`, { usernameOrEmail, password })
+      .pipe(
+      tap(res => {
+        localStorage.setItem('token', res.token);
+        localStorage.setItem('user', JSON.stringify({ username: res.username, email: res.email, lenPassword: password.length }));
+        this.router.navigate(['/home']);
+      }),
+      catchError(err => {
+        return throwError(() => err); 
+      })
+    );
   }
 
   logout() {
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
     this.router.navigate(['/auth']);
   }
 
-  resetPassword(token: string, newPassword: string) {
-    return this.http.post(`${this.apiUrl}/reset-password`, { token, newPassword });
+  forgotPassword(email: string): Observable<string> {
+    const params = new HttpParams().set('email', email);
+    return this.http.post(`${this.apiUrl}/forgot-password`, null, { 
+      params,
+      responseType: 'text' 
+    });
+  }
+
+  resetPassword(resetToken: string, newPassword: string) {
+    return this.http.post(`${this.apiUrl}/reset-password`, { resetToken, newPassword });
   }
 }

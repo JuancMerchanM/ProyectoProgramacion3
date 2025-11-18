@@ -2,6 +2,7 @@ package com.Uptc.ProyectoFinal.controller;
 
 import java.util.Map;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -24,7 +25,7 @@ public class AuthController {
 
     private final AuthService authService;
 
-    public AuthController (AuthService as){
+    public AuthController(AuthService as) {
         this.authService = as;
     }
 
@@ -38,22 +39,47 @@ public class AuthController {
     }
 
     @PostMapping(path = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
-        System.out.println(request.getUsernameOrEmail());
-        System.out.println(request.getPassword());
-        return ResponseEntity.ok(authService.login(request));
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+
+        AuthResponse auth = authService.login(request);
+
+        if (auth == null) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("error", "Usuario o contraseña incorrectos"));
+        }
+
+        return ResponseEntity.ok(auth);
     }
 
     @PostMapping("/forgot-password")
-    public ResponseEntity<String> forgotPassword(@RequestParam String email) {
-        authService.sendPasswordResetEmail(email);
-        return ResponseEntity.ok("Se ha enviado un correo para restablecer tu contraseña.");
+    public ResponseEntity<?> forgotPassword(@RequestParam String email) {
+
+        boolean sent = authService.sendPasswordResetEmail(email);
+
+        if (!sent) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("error", "No existe un usuario con ese correo"));
+        }
+
+        return ResponseEntity.ok(
+                Map.of("message", "Se ha enviado un correo para restablecer tu contraseña."));
     }
 
     @PostMapping("/reset-password")
-    public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordRequest rpr) {
-        authService.resetPassword(rpr.getResetToken(), rpr.getNewPassword());
-        return ResponseEntity.ok("Tu contraseña ha sido actualizada correctamente.");
+    public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordRequest rpr) {
+
+        boolean ok = authService.resetPassword(rpr.getResetToken(), rpr.getNewPassword());
+
+        if (!ok) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", "Token inválido o expirado"));
+        }
+
+        return ResponseEntity.ok(
+                Map.of("message", "Tu contraseña ha sido actualizada correctamente."));
     }
 
 }

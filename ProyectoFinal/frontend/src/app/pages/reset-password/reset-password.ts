@@ -31,7 +31,9 @@ export class ResetPassword {
   };
 
   constructor() {
-    this.token = this.route.snapshot.paramMap.get('token') ?? '';
+    this.route.queryParams.subscribe(params => {
+      this.token = params['token'] ?? '';
+    });
   }
 
   validatePassword() {
@@ -54,7 +56,7 @@ export class ResetPassword {
 
   resetPassword() {
     if (!this.canSubmit()) return;
-
+    console.log("Cambiando contrase;a");
     this.isLoading = true;
 
     this.authService.resetPassword(this.token, this.newPassword).subscribe({
@@ -72,5 +74,6 @@ export class ResetPassword {
         this.isLoading = false;
       }
     });
+    console.log(this.message);
   }
 }

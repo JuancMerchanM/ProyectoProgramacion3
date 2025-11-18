@@ -1,5 +1,6 @@
 package com.Uptc.ProyectoFinal.service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,20 +31,26 @@ public class AuthService {
     private JwtService jwtService;
 
     public AuthResponse login(LoginRequest request) {
-        User user = userRepository.findByUsername(request.getUsernameOrEmail())
-            .or(() -> userRepository.findByEmail(request.getUsernameOrEmail()))
-            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        Optional<User> userOpt = userRepository.findByUsername(request.getUsernameOrEmail())
+                .or(() -> userRepository.findByEmail(request.getUsernameOrEmail()));
+
+        if (userOpt.isEmpty()) {
+            return null;
+        }
+
+        User user = userOpt.get();
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Contraseña incorrecta");
+            return null;
         }
+
         String token = jwtService.generateToken(user.getUsername());
-        return new AuthResponse(token, user.getUsername());
+        return new AuthResponse(token, user.getUsername(), user.getEmail());
     }
 
     public boolean register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail()) ||
-            userRepository.existsByUsername(request.getUsername())) {
+                userRepository.existsByUsername(request.getUsername())) {
             return false;
         }
 
@@ -55,15 +62,20 @@ public class AuthService {
         return true;
     }
 
-    public void sendPasswordResetEmail(String email) {
-        User user = userRepository.findByEmail(email)
-            .orElseThrow(() -> new RuntimeException("No existe un usuario con ese correo"));
+    public boolean sendPasswordResetEmail(String email) {
+        Optional<User> userOpt = userRepository.findByEmail(email);
+
+        if (userOpt.isEmpty()) {
+            return false;
+        }
+
+        User user = userOpt.get();
 
         String token = UUID.randomUUID().toString();
         user.setResetToken(token);
         userRepository.save(user);
 
-        String resetUrl = "http://localhost:8080/reset-password?token=" + token;
+        String resetUrl = "http://localhost:4200/reset-password?token=" + token;
         String message = "Haz clic en el siguiente enlace para restablecer tu contraseña:\n" + resetUrl;
 
         SimpleMailMessage mail = new SimpleMailMessage();
@@ -72,14 +84,26 @@ public class AuthService {
         mail.setText(message);
 
         mailSender.send(mail);
+
+        return true;
     }
 
-    public void resetPassword(String token, String newPassword) {
-        User user = userRepository.findByResetToken(token)
-            .orElseThrow(() -> new RuntimeException("Token inválido o expirado"));
+    public boolean resetPassword(String token, String newPassword) {
+        Optional<User> userOpt = userRepository.findByResetToken(token);
 
-        user.setPassword(newPassword); // ⚠️ cifrar con BCrypt antes de guardar
+        if (userOpt.isEmpty()) {
+            return false;
+        }
+
+        User user = userOpt.get();
+
+        String encoded = passwordEncoder.encode(newPassword);
+        user.setPassword(encoded);
+
         user.setResetToken(null);
         userRepository.save(user);
+
+        return true;
     }
+
 }
