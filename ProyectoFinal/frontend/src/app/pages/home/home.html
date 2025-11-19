@@ -38,45 +38,7 @@
             <app-user-list [username]="user?.username" [email]="user?.email" [lenPassword]="user?.lenPassword ?? 0"/>
             }
             @if (activePanel === 'posts') {
-            <app-list-posts [posts]="[
-  {
-    name: 'Ruta del Café Boyacense',
-    date: '2025-03-21',
-    description: 'Un recorrido por las fincas cafeteras de Boyacá con paisajes únicos y cultura local.',
-    distance: 125,
-    numSpots: 3,
-    spots: [
-      { image: 'carousel-2.png', name: 'Finca El Paraíso', municipality: 'Chiquinquirá', category: 'Café', rating: 4.8 },
-      { image: 'carousel-2.png', name: 'Mirador La Cumbre', municipality: 'Ráquira', category: 'Panorámica', rating: 4.5 },
-      { image: 'carousel-2.png', name: 'Museo del Café', municipality: 'Villa de Leyva', category: 'Cultura', rating: 4.7 }
-    ]
-  },
-  {
-    name: 'Travesía Sierra Nevada',
-    date: '2025-04-10',
-    description: 'Explora los senderos más altos de la Sierra Nevada con guías locales y experiencias únicas.',
-    distance: 312,
-    numSpots: 4,
-    spots: [
-      { image: 'carousel-2.png', name: 'Campamento Base', municipality: 'Minca', category: 'Naturaleza', rating: 4.9 },
-      { image: 'carousel-2.png', name: 'Río Pozo Azul', municipality: 'Santa Marta', category: 'Agua', rating: 4.6 },
-      { image: 'carousel-2.png', name: 'Mirador del Cacique', municipality: 'Ciénaga', category: 'Panorámica', rating: 4.4 },
-      { image: 'carousel-2.png', name: 'Sendero Kogui', municipality: 'Palmor', category: 'Cultura', rating: 4.7 }
-    ]
-  },
-  {
-    name: 'Ruta del Agua y las Cascadas',
-    date: '2025-05-02',
-    description: 'Una experiencia refrescante recorriendo los saltos de agua más hermosos del centro de Boyacá.',
-    distance: 210,
-    numSpots: 3,
-    spots: [
-      { image: 'carousel-2.png', name: 'Cascada La Honda', municipality: 'Paipa', category: 'Cascada', rating: 4.6 },
-      { image: 'carousel-2.png', name: 'Laguna Verde', municipality: 'Tibasosa', category: 'Lago', rating: 4.8 },
-      { image: 'carousel-2.png', name: 'Salto del Ángel', municipality: 'Duitama', category: 'Cascada', rating: 4.9 }
-    ]
-  }
-]" />
+            <app-list-posts />
             }
             @if (activePanel === 'createRoute') {
             <app-create-route />

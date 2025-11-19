@@ -6,5 +6,5 @@ export interface Point{
     municipality: string;
     category: string;
     rating: number;
-    location?: Location
+    location: Location
 }

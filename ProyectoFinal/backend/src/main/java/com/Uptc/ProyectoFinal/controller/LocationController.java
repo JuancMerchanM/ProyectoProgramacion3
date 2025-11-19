@@ -26,7 +26,7 @@ public class LocationController {
         this.service = service;
     }
 
-    @GetMapping
+    @GetMapping("/")
     public ResponseEntity<List<Location>> getAll() {
         return ResponseEntity.ok(service.findAll());
     }

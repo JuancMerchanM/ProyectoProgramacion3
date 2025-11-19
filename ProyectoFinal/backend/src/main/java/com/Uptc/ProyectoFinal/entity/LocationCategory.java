@@ -9,5 +9,6 @@ public enum LocationCategory {
     LAGUNA,
     SITIO_HISTORICO,
     PARQUE,
+    RELIGIOSO,
     OTRO
 }

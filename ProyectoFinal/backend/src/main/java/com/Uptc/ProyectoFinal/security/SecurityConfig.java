@@ -32,12 +32,12 @@ public class SecurityConfig {
     @Primary
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable())
+            .csrf(csrf -> csrf.disable()).cors(cors->{})
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/auth/**").permitAll()
                 .anyRequest().authenticated()
             )
-            .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults())); // ✅ activa validación JWT automática
+            .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults())); 
 
         return http.build();
     }
@@ -47,7 +47,7 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-    
+
     @Bean
     @Primary
     public JwtEncoder jwtEncoder() {
