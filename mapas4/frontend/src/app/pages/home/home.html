@@ -1,0 +1,26 @@
+<div class="home-container">
+    <!-- MAPA -->
+    <div class="map-container">
+        <app-show-map></app-show-map>
+    </div>
+
+    <!-- PANEL LATERAL -->
+    <div class="side-panel" [class.expanded]="panelOpen">
+        <div class="panel-buttons">
+            <!-- ... tus botones ... -->
+            <button (click)="togglePanel('createRoute')">
+                <img src="add-icon.png" alt="create route">
+                <span class="tooltip">Create route</span>
+            </button>
+        </div>
+
+        <div class="panel-content" [class.visible]="panelOpen">
+            @if (activePanel === 'createRoute') {
+                <app-create-route 
+                    (routeCalculated)="onRouteCalculated($event)"
+                    (routeSaved)="onRouteSaved($event)">
+                </app-create-route>
+            }
+        </div>
+    </div>
+</div>

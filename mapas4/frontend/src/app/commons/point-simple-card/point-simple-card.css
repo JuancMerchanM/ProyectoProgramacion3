@@ -1,0 +1,62 @@
+.markbook-card {
+    display: flex;
+    align-items: stretch;
+    background-color: #d9d9d9;
+    border-radius: 8px;
+    overflow: hidden;
+    width: 100%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.place-image {
+    width: 25%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.markbook-content {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px;
+}
+
+.markbook-info h2 {
+    font-size: 1em;
+    font-weight: 600;
+    margin-bottom: 4px;
+    margin-top: 0px;
+    color: #000;
+}
+
+.markbook-info p {
+    font-size: 0.7em;
+    color: #333;
+    line-height: 1.4;
+    margin: 0px;
+}
+
+.markbook-rating {
+    align-self: baseline;
+    font-size: 1.4em;
+    position: relative;
+    display: inline-block;
+    line-height: 1;
+    margin-bottom: 4px;
+}
+
+.stars {
+    color: #bbbbbb;
+    /* color base (vacías) */
+}
+
+.stars.filled {
+    color: rgb(0, 0, 0);
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    /* recorta según el width */
+    white-space: nowrap;
+}

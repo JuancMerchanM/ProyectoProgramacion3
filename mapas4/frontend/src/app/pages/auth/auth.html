@@ -1,0 +1,13 @@
+<div class="container">
+    <div class="left">
+        <img src="Logo.png" alt="" class="logo">
+        @if(showLogin){
+            <app-login (createAccount)="togglePanel()" />
+        }@else{
+            <app-create-user (goToLogin)="togglePanel()" />
+        }
+    </div>
+    <div class="right">
+        <app-carousel style="width: 70%;"/>
+    </div>
+</div>

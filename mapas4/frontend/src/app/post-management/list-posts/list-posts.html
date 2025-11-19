@@ -1,0 +1,32 @@
+<div class="container">
+    <div class="two-columns">
+        <span class="title">Ultimas publicaciones</span>
+        <button><img src="post-create-icon.png" alt="Postea una ruta" class="icon" /></button>
+    </div>
+    <hr class="divider">
+    <div class="list-posts-container">
+        @for(post of posts; track post.name){
+        <div class="two-columns">
+            <span class="title">Ruta {{post.name}}</span>
+            <span>Distancia: {{post.distance}}km</span>
+        </div>
+        <span>{{post.description}}</span>
+        <app-point-simple-card [data]="post.spots.at(0) " />
+        @if(post.spots.length>1){
+        <div class="two-columns">
+            <span>{{post.numSpots}} Lugares</span>
+            <button (click)="togglePostExpansion(post.name)"><img src="display-icon.png" alt="Desplegar mas lugares"
+                    class="icon"></button>
+        </div>
+        }
+    
+        <div class="expanded-posts">
+            @if(expandedPosts.has(post.name)){
+            @for (spot of post.spots.slice(1); track spot.name) {
+            <app-point-simple-card [data]="spot" />
+            }
+            }
+        </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,116 @@
+.home-container {
+  display: flex;
+  flex-direction: row;
+  height: 100vh; /* fuerza altura total de la ventana */
+  width: 100%;
+}
+
+/* MAP CONTAINER */
+.map-container {
+  flex: 1;
+  display: flex;
+}
+
+app-show-map {
+  display: block;      /* <- Clave */
+  width: 100%;         /* <- Expande al contenedor */
+  height: 100%;        /* <- Da altura al #map interno */
+}
+
+app-list-posts{
+  display: block;
+  height: 100%;
+}
+
+/* LATERAL PANEL */
+/* PANEL PRINCIPAL */
+.side-panel {
+  display: flex;
+  flex-direction: row; /* botones y contenido lado a lado */
+  width: 60px;
+  background: #fff;
+  border-left: 1px solid #ddd;
+  transition: width .3s ease;
+  box-shadow: -2px 0 6px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+.side-panel.expanded {
+  width: 30%; /* ancho cuando se expande */
+}
+
+/* BOTONES LATERALES */
+.panel-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 60px; /* mantiene su tamaño fijo */
+  border-right: 1px solid #eee;
+  background: #fff;
+  z-index: 2;
+}
+
+.panel-buttons button {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  background: white;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+}
+
+.tooltip {
+  position: absolute;
+  left: -120px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #1a1c2c;
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 14px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  
+  /* Animación */
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  transform: translate(-15px, -50%);
+}
+
+.tooltip::after {
+  content: "";
+  position: absolute;
+  right: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: 6px;
+  border-style: solid;
+  border-color: transparent transparent transparent #1a1c2c;
+}
+
+.panel-buttons button:hover .tooltip {
+  opacity: 1;
+  transform: translate(0, -50%);
+}
+
+.panel-buttons img {
+  width: 22px;
+}
+
+/* CONTENT AREA */
+.panel-content {
+  flex: 1;
+  padding: 15px;
+  border-left: 1px solid #e1e1e1;
+}
+
+.panel-content h3 {
+  margin-top: 0;
+}

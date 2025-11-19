@@ -1,0 +1,21 @@
+.form-group {
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.label {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.input-box {
+    width: 100%;
+    background: #e6e6e6;
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 18px;
+    color: #000;
+}
