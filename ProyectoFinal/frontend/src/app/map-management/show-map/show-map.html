@@ -1,1 +1,5 @@
-<div id="map"></div>
+<div id="map">
+    @if (selectedPoint()) {
+        <app-show-site [point]="selectedPoint()" />
+    }
+</div>

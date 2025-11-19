@@ -1,17 +1,21 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import * as L from 'leaflet';
-import * as turf from '@turf/turf';
 import { MapService } from '../map-service';
+import { Point } from 'app/interfaces/Point.interface';
+import { ShowSite } from "app/tourist-site-management/show-site/show-site";
 @Component({
   selector: 'app-show-map',
-  imports: [],
+  imports: [ShowSite],
   templateUrl: './show-map.html',
   styleUrl: './show-map.css'
 })
 export class ShowMap {
   map!: L.Map;
+  selectedPoint = signal<Point | null>(null);
 
-  constructor(private mapService: MapService) { }
+  constructor(private mapService: MapService) { 
+    this.selectedPoint = this.mapService.selectedPoint;
+  }
 
   ngAfterViewInit(): void {
     this.map = L.map('map').setView([5.5, -73.4], 8);

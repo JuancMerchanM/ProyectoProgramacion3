@@ -3,11 +3,11 @@ import { Point } from 'app/interfaces/Point.interface';
 import { ListRoutes } from "app/route-management/list-routes/list-routes";
 
 @Component({
-  selector: 'app-tourist-site-list',
+  selector: 'app-show-site',
   imports: [ListRoutes],
   templateUrl: './show-site.html',
   styleUrl: './show-site.css'
 })
-export class TouristSiteList {
-  @Input() point?: Point;
+export class ShowSite {
+  @Input() point!: Point|null;
 }

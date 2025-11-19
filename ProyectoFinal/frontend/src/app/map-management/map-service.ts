@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { Point } from 'app/interfaces/Point.interface';
 import L from 'leaflet';
 import { Observable } from 'rxjs';
@@ -10,6 +10,7 @@ import { Observable } from 'rxjs';
 export class MapService {
   private baseUrl = 'http://localhost:8035/location';
   private map!: L.Map;
+  selectedPoint = signal<Point | null>(null);
 
   private icons: Record<string, L.Icon> = {
     CASCADA: this.createIcon('categories/CASCADApoint.png'),
@@ -44,7 +45,8 @@ export class MapService {
       .bindPopup(point.name);
 
     marker.on('click', () => {
-      console.log('Clic en marcador:', point);
+      console.log(point)
+      this.selectedPoint.set(point);
     });
   }
 
