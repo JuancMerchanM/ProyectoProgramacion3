@@ -11,11 +11,11 @@ export class Alert {
   message = signal('');
   type = signal<'success' | 'error'>('success');
 
-  show(msg: string, type: 'success' | 'error' = 'success') {
+  show(msg: string, type: 'success' | 'error' = 'success', timeout: number) {
     this.message.set(msg);
     this.type.set(type);
     this.visible.set(true);
 
-    setTimeout(() => this.visible.set(false), 3000);
+    setTimeout(() => this.visible.set(false), timeout);
   }
 }

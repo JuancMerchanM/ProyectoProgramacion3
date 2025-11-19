@@ -1,19 +1,21 @@
-import { Component, EventEmitter, inject, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Output, ViewChild } from '@angular/core';
 import { FormsModule, NgModel } from '@angular/forms';
 import { AnimatedButton } from '@shared/animated-button/animated-button';
 import { InputField } from '@shared/input-field/input-field';
 import { User } from 'app/interfaces/User.interface';
 import { UserService } from '../user-service';
+import { Alert } from '@shared/alert/alert';
 
 @Component({
   selector: 'app-create-user',
-  imports: [FormsModule, InputField, AnimatedButton],
+  imports: [FormsModule, InputField, AnimatedButton, Alert],
   templateUrl: './create-user.html',
   styleUrl: './create-user.css'
 })
 export class CreateUser {
 
   private userService = inject(UserService);
+  @ViewChild('alertCreate') alert!: Alert;
 
   user: User = {
     email: '',
@@ -25,8 +27,16 @@ export class CreateUser {
 
   @Output() goToLogin = new EventEmitter<void>();
 
-  message = '';
+  errorMessage = '';
   isSuccess = false;
+
+  validateUsername(username: string) {
+    const usernameRegex =
+      /^[a-zA-Z0-9_\-&$]+$/;
+
+    return usernameRegex.test(username);
+  }
+
 
   onSubmit(form: any): void {
     if (form.invalid) {
@@ -34,22 +44,27 @@ export class CreateUser {
       return;
     }
 
-    if (this.user.password !== this.confirmPassword) {
-      this.message = 'Passwords do not match.';
-      this.isSuccess = false;
+    if (!this.validateUsername(this.user.username)) {
+      this.errorMessage = 'Nombre de usuario invalido: solo letras, numeros, _, -, &, $ estan permitidos.';
       return;
     }
 
+    if (this.user.password !== this.confirmPassword) {
+      this.errorMessage = 'Las contraseñas no coinciden.';
+      this.isSuccess = false;
+      return;
+    }
     this.userService.createUser(this.user).subscribe({
       next: () => {
-        this.message = 'Account created successfully!';
+        this.errorMessage = '';
+        this.alert.show("Cuenta creada exitosamente", "error", 1200);
         this.isSuccess = true;
 
         setTimeout(() => this.goToLogin.emit(), 1500);
       },
       error: (err) => {
         console.error(err);
-        this.message = 'Error creating account.';
+        this.errorMessage = 'Error creando la cuenta.';
         this.isSuccess = false;
       }
     });

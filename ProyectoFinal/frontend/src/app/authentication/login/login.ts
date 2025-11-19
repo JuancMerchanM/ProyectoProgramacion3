@@ -44,7 +44,7 @@ export class LoginComponent {
         valid: usernameRegex.test(value),
         message: usernameRegex.test(value)
           ? 'Nombre de usuario valido.'
-          : 'Numero de usuario invalido: solo letras, numeros, _, -, &, $ estan permitidos.'
+          : 'Nombre de usuario invalido: solo letras, numeros, _, -, &, $ estan permitidos.'
       };
     }
   }
@@ -85,7 +85,7 @@ export class LoginComponent {
 
     this.authService.forgotPassword(this.usernameOrEmail).subscribe({
       next: (msg) => {
-        this.alert.show('Un correo de recuperacion ha sido enviado a '+this.usernameOrEmail, 'success');
+        this.alert.show('Un correo de recuperacion ha sido enviado a '+this.usernameOrEmail, 'success', 2000);
       },
       error: err => {
         this.errorMessage = 'Error enviando el correo. Por favor intentalo de nuevo.';

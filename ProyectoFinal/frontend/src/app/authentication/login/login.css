@@ -37,7 +37,7 @@ a {
   margin: 10px;
 }
 
-#error-message{
+.error-message{
   width: 100%;
   font-size: 12px;
   color: rgb(165, 0, 0);
