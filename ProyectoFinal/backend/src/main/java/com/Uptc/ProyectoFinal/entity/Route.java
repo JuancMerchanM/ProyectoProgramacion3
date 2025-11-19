@@ -20,19 +20,15 @@ import jakarta.persistence.Table;
 @Table(name = "rutas")
 public class Route {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(nullable = false)
     private String name;
 
     // Relación con lugares
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-        name = "route_points",
-        joinColumns = @JoinColumn(name = "route_id"),
-        inverseJoinColumns = @JoinColumn(name = "location_id")
-    )
+    @JoinTable(name = "route_points", joinColumns = @JoinColumn(name = "route_id"), inverseJoinColumns = @JoinColumn(name = "location_id"))
     private List<Location> points = new ArrayList<>();
 
     @Column(nullable = false)
@@ -41,27 +37,27 @@ public class Route {
     @Column
     private Double duration; // Estimado en minutos u horas
 
-    @Column(columnDefinition = "JSON", nullable = false)
+    @Column(columnDefinition = "LONGTEXT", nullable = false)
     private String path;
 
-    @Column(name="is_public", nullable = false)
+    @Column(name = "is_public", nullable = false)
     private boolean isPublic = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by")
     private User createdBy;
 
-    @Column(name="created_at",nullable = false)
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    @Column(name="num_points")
+    @Column(name = "num_points")
     private Integer numPoints;
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -129,5 +125,4 @@ public class Route {
         this.numPoints = numPoints;
     }
 
-    
 }

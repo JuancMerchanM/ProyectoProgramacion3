@@ -12,10 +12,9 @@ export class MapService {
   private map!: L.Map;
 
   private icons: Record<string, L.Icon> = {
-    MONTAÑA: this.createIcon('assets/icons/montana.png'),
-    RIO: this.createIcon('assets/icons/rio.png'),
-    PUEBLO: this.createIcon('assets/icons/pueblo.png'),
-    DEFAULT: this.createIcon('assets/icons/default.png'),
+    CASCADA: this.createIcon('categories/CASCADApoint.png'),
+    SENDERO: this.createIcon('categories/SENDERO.png'),
+    DEFAULT: this.createIcon('categories/CASCADApoint.png'),
   };
 
   constructor(private http: HttpClient) {}
@@ -31,8 +30,8 @@ export class MapService {
   private createIcon(url: string): L.Icon {
     return L.icon({
       iconUrl: url,
-      iconSize: [40, 40],
-      iconAnchor: [20, 40],
+      iconSize: [40, 50],
+      iconAnchor: [20, 50],
       popupAnchor: [0, -35]
     });
   }

@@ -35,6 +35,8 @@ export class ShowMap {
 
         this.map.fitBounds(boyacaLayer.getBounds());
 
+        this.mapService.setMap(this.map);
+
         this.mapService.getAll().subscribe(points => {
           this.mapService.addPoints(points);
         });

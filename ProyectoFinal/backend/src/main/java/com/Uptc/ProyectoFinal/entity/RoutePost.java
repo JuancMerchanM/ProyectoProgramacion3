@@ -15,10 +15,10 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "posts")
 public class RoutePost {
-    
+
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "route_id")
@@ -30,17 +30,17 @@ public class RoutePost {
     @Column(nullable = false, name = "is_active")
     private boolean isActive = true; // Si fue retirada o no
 
-    @Column
+    @Column(precision = 2)
     private Double rating;
 
     @Column(name = "published_at")
     private LocalDateTime publishedAt = LocalDateTime.now();
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -84,5 +84,4 @@ public class RoutePost {
         this.publishedAt = publishedAt;
     }
 
-    
 }
