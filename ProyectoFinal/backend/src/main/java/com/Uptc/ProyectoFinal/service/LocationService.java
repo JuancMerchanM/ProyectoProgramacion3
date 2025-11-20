@@ -23,7 +23,12 @@ public class LocationService {
     }
 
     public Optional<Location> findById(String id) {
-        return repository.findById(id);
+        try {
+            Long locationId = Long.parseLong(id);
+            return repository.findById(locationId);
+        } catch (NumberFormatException e) {
+            return Optional.empty();
+        }
     }
 
     public Location save(Location location) {
@@ -31,16 +36,20 @@ public class LocationService {
     }
 
     public void delete(String id) {
-        repository.deleteById(id);
+        try {
+            Long locationId = Long.parseLong(id);
+            repository.deleteById(locationId);
+        } catch (NumberFormatException e) {
+            throw new RuntimeException("ID inválido: " + id);
+        }
     }
 
     public List<Location> findByCategory(String category) {
-    try {
-        LocationCategory cat = LocationCategory.valueOf(category.toUpperCase());
-        return repository.findByCategory(cat);
-    } catch (IllegalArgumentException e) {
-        // categoría no válida → devuelve lista vacía o lanza excepción personalizada
-        return List.of();
+        try {
+            LocationCategory cat = LocationCategory.valueOf(category.toUpperCase());
+            return repository.findByCategory(cat);
+        } catch (IllegalArgumentException e) {
+            return List.of();
+        }
     }
-}
 }

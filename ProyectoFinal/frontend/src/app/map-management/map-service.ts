@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, signal } from '@angular/core';
 import { Point } from 'app/interfaces/Point.interface';
 import L from 'leaflet';
@@ -37,6 +37,13 @@ export class MapService {
     });
   }
 
+  private getHeaders(): HttpHeaders {
+    const token = localStorage.getItem('token');
+    return new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+  }
+
   addPoint(point: Point) {
     const icon = this.icons[point.category] ?? this.icons['DEFAULT'];
 
@@ -55,6 +62,14 @@ export class MapService {
   }
 
   getAll(): Observable<Point[]> {
-    return this.http.get<Point[]>(`${this.baseUrl}/`);
+    return this.http.get<Point[]>(`${this.baseUrl}/`, {
+      headers: this.getHeaders()
+    });
+  }
+
+  getByCategory(category: string): Observable<Point[]> {
+    return this.http.get<Point[]>(`${this.baseUrl}/category/${category}`, {
+      headers: this.getHeaders()
+    });
   }
 }

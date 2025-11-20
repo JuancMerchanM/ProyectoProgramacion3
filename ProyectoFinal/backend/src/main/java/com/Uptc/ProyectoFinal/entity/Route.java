@@ -125,4 +125,12 @@ public class Route {
         this.numPoints = numPoints;
     }
 
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
+	}
+
 }

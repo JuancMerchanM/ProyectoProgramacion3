@@ -1,33 +1,156 @@
-<div class="form-group-inline">
-    <input id="startPoint" type="text" placeholder="Mi nueva ruta" [(ngModel)]="routeName" name="routeName" required />
-</div>
-<div class="form-group-inline">
-    <label for="startPoint">Punto de partida</label>
-    <input id="startPoint" type="text" placeholder="Cll 90B #3ab-245" [(ngModel)]="startPoint" name="startPoint"
-        required />
-</div>
-<div class="two-columns" style="margin-top: 20px;">
-    <span>Luegares en la ruta</span>
-    <span>Distancia: {{distance}}km</span>
-</div>
-<hr>
-<div class="spots-container">
-    <div class="two-columns">
-        <app-point-simple-card />
-        <button><img src="remove-icon.png" alt="Eliminar"></button>
+<div class="route-creator-container">
+    <!-- Nombre de la ruta -->
+    <div class="form-group-inline">
+        <label for="routeName">Nombre de la ruta</label>
+        <input id="routeName" type="text" placeholder="Mi nueva ruta" [(ngModel)]="routeName" name="routeName" required />
     </div>
-</div>
-<div class="two-columns" style="margin-top: 20px;">
-    <span class="title">Recomendaciones</span>
-    <button><img src="filter-icon.png" alt="Postea una ruta" class="icon" /></button>
-</div>
-<hr>
-<div class="filter-container">
-    <button class="filter">Cascada</button>
-</div>
-<div class="suggested-spots">
-    <div class="two-columns">
-        <app-point-simple-card />
-        <button><img src="append-icon.png" alt="Agregar"></button>
+
+    <!-- Selección de puntos -->
+    <div class="points-section">
+        <h3>Puntos de la Ruta</h3>
+        
+        <!-- Punto de origen -->
+        <div class="point-selector">
+            <label>Punto de Partida</label>
+            @if (originPoint) {
+                <div class="selected-point">
+                    <span>{{originPoint.name}}</span>
+                    <button type="button" (click)="originPoint = null; clearCalculatedRoute()">
+                        <img src="remove-icon.png" alt="Eliminar">
+                    </button>
+                </div>
+            } @else {
+                <p class="no-selection">Selecciona un punto de partida de las recomendaciones</p>
+            }
+        </div>
+
+        <!-- Puntos intermedios -->
+        @if (waypointPoints.length > 0) {
+            <div class="waypoints-section">
+                <label>Puntos Intermedios</label>
+                @for (waypoint of waypointPoints; track waypoint.id; let i = $index) {
+                    <div class="selected-point">
+                        <span>{{waypoint.name}}</span>
+                        <button type="button" (click)="removeWaypoint(i)">
+                            <img src="remove-icon.png" alt="Eliminar">
+                        </button>
+                    </div>
+                }
+            </div>
+        }
+
+        <!-- Punto de destino -->
+        <div class="point-selector">
+            <label>Punto de Destino</label>
+            @if (destinationPoint) {
+                <div class="selected-point">
+                    <span>{{destinationPoint.name}}</span>
+                    <button type="button" (click)="destinationPoint = null; clearCalculatedRoute()">
+                        <img src="remove-icon.png" alt="Eliminar">
+                    </button>
+                </div>
+            } @else {
+                <p class="no-selection">Selecciona un punto de destino de las recomendaciones</p>
+            }
+        </div>
+    </div>
+
+    <!-- Información de la ruta calculada -->
+    @if (calculatedRoute) {
+        <div class="route-info">
+            <div class="info-item">
+                <span class="label">Distancia:</span>
+                <span class="value">{{distance}} km</span>
+            </div>
+            <div class="info-item">
+                <span class="label">Duración estimada:</span>
+                <span class="value">{{duration}} min</span>
+            </div>
+        </div>
+    }
+
+    <!-- Botones de acción -->
+    <div class="action-buttons">
+        <button 
+            type="button" 
+            class="btn-calculate" 
+            (click)="calculateRoute()"
+            [disabled]="!originPoint || !destinationPoint || isCalculating">
+            @if (isCalculating) {
+                <span>Calculando...</span>
+            } @else {
+                <span>Calcular Ruta</span>
+            }
+        </button>
+
+        <button 
+            type="button" 
+            class="btn-save" 
+            (click)="saveRoute()"
+            [disabled]="!calculatedRoute || !routeName">
+            Guardar Ruta
+        </button>
+
+        <button 
+            type="button" 
+            class="btn-reset" 
+            (click)="resetForm()">
+            Limpiar Todo
+        </button>
+    </div>
+
+    <hr>
+
+    <!-- Filtros de categoría -->
+    <div class="recommendations-header">
+        <span class="title">Lugares Disponibles</span>
+    </div>
+    
+    <div class="filter-container">
+        @for (category of categories; track category) {
+            <button 
+                class="filter" 
+                [class.active]="selectedCategory === category"
+                (click)="filterByCategory(category)">
+                {{category}}
+            </button>
+        }
+    </div>
+
+    <!-- Lista de puntos disponibles -->
+    <div class="suggested-spots">
+        @for (point of filteredPoints; track point.id) {
+            <div class="spot-item" [class.used]="isPointUsed(point)">
+                <div class="spot-info">
+                    <h4>{{point.name}}</h4>
+                    <p class="category">{{point.category}}</p>
+                    <p class="municipality">{{point.municipality}}</p>
+                </div>
+                
+                <div class="spot-actions">
+                    <button 
+                        type="button"
+                        (click)="selectOrigin(point)"
+                        [disabled]="isPointUsed(point)"
+                        title="Usar como origen">
+                        O
+                    </button>
+                    <button 
+                        type="button"
+                        (click)="addWaypoint(point)"
+                        [disabled]="isPointUsed(point) || !originPoint"
+                        title="Agregar como punto intermedio">
+                        +
+                    </button>
+                    <button 
+                        type="button"
+                        (click)="selectDestination(point)"
+                        [disabled]="isPointUsed(point)"
+                        title="Usar como destino">
+                        D
+                    </button>
+                </div>
+            </div>
+        }
     </div>
 </div>

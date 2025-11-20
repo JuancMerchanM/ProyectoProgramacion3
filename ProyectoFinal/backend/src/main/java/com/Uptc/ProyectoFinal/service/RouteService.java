@@ -34,8 +34,13 @@ public class RouteService {
     }
 
     public Route getById(String id) {
-        return routeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Ruta no encontrada"));
+        try {
+            Long routeId = Long.parseLong(id);
+            return routeRepository.findById(routeId)
+                    .orElseThrow(() -> new RuntimeException("Ruta no encontrada"));
+        } catch (NumberFormatException e) {
+            throw new RuntimeException("ID de ruta inválido: " + id);
+        }
     }
 
     public Route create(Route route) {
@@ -54,6 +59,8 @@ public class RouteService {
         existing.setPoints(updated.getPoints());
         existing.setDistance(updated.getDistance());
         existing.setDuration(updated.getDuration());
+        existing.setPath(updated.getPath());
+        existing.setNumPoints(updated.getNumPoints());
         return routeRepository.save(existing);
     }
 
