@@ -1,32 +1,122 @@
-<div class="container">
-    <div class="two-columns">
-        <span class="title">Ultimas publicaciones</span>
-        <button><img src="post-create-icon.png" alt="Postea una ruta" class="icon" /></button>
+<div class="posts-container">
+      <div class="posts-header">
+        <h2>Últimas Publicaciones</h2>
+      </div>
+      
+      @if (loading) {
+        <div class="loading-state">
+          <div class="spinner"></div>
+          <p>Cargando publicaciones...</p>
+        </div>
+      } @else if (posts.length === 0) {
+        <div class="empty-state">
+          <div class="empty-icon">📍</div>
+          <p class="empty-title">No hay publicaciones todavía</p>
+          <p class="empty-subtitle">¡Sé el primero en compartir una ruta!</p>
+        </div>
+      } @else {
+        <div class="posts-list">
+          @for(post of posts; track post.id) {
+            <div class="post-card">
+              <!-- Header con usuario y fecha -->
+              <div class="post-user-info">
+                <div class="user-avatar">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+                  </svg>
+                </div>
+                <div class="user-details">
+                  <span class="username">{{ post.route.createdBy.username || 'Usuario' }}</span>
+                  <span class="post-date">{{ formatDate(post.publishedAt) }}</span>
+                </div>
+              </div>
+
+              <!-- Contenido principal -->
+              <div class="post-content">
+                <div class="post-main">
+                  <!-- Imagen/Thumbnail -->
+                  <div class="post-thumbnail">
+                    <div class="thumbnail-gradient"></div>
+                    <div class="thumbnail-icon">🗺️</div>
+                  </div>
+
+                  <!-- Información de la ruta -->
+                  <div class="post-info">
+                    <h3 class="route-name">{{ post.route.name }}</h3>
+                    <p class="route-location">
+                      {{ post.route.points[0]?.name || 'Múltiples ubicaciones' }}
+                    </p>
+                    <div class="route-stats">
+                      <span class="stat-item">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                          <circle cx="12" cy="10" r="3"/>
+                        </svg>
+                        {{ post.route.numPoints }} Lugares
+                      </span>
+                      <span class="stat-divider">•</span>
+                      <span class="stat-item">Distancia: {{ formatDistance(post.route.distance) }} km</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Rating -->
+                @if (post.rating) {
+                  <div class="post-rating">
+                    @for (star of [1, 2, 3, 4, 5]; track star) {
+                      <span class="star" [class.filled]="star <= post.rating!">
+                        {{ star <= post.rating! ? '★' : '☆' }}
+                      </span>
+                    }
+                  </div>
+                }
+              </div>
+
+              <!-- Descripción -->
+              <div class="post-description" [class.expanded]="expandedPosts.has(post.id)">
+                <p>{{ post.description }}</p>
+              </div>
+
+              <!-- Botón de expandir -->
+              <button 
+                class="expand-btn"
+                (click)="togglePostExpansion(post.id)"
+              >
+                <span>{{ expandedPosts.has(post.id) ? 'Ver menos' : 'Ver más' }}</span>
+                <svg 
+                  width="16" 
+                  height="16" 
+                  viewBox="0 0 24 24" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  stroke-width="2"
+                  [class.rotated]="expandedPosts.has(post.id)"
+                >
+                  <polyline points="6 9 12 15 18 9"/>
+                </svg>
+              </button>
+
+              <!-- Lugares (expandible) -->
+              @if (expandedPosts.has(post.id) && post.route.points && post.route.points.length > 0) {
+                <div class="post-locations">
+                  <div class="locations-header">
+                    <h4>Lugares en esta ruta</h4>
+                  </div>
+                  <div class="locations-list">
+                    @for (point of post.route.points; track point.id) {
+                      <div class="location-item">
+                        <div class="location-marker">📍</div>
+                        <div class="location-info">
+                          <span class="location-name">{{ point.name || 'Lugar sin nombre' }}</span>
+                          <span class="location-category">{{ point.category || 'Sin categoría' }}</span>
+                        </div>
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      }
     </div>
-    <hr class="divider">
-    <div class="list-posts-container">
-        @for(post of posts; track post.name){
-        <div class="two-columns">
-            <span class="title">Ruta {{post.name}}</span>
-            <span>Distancia: {{post.distance}}km</span>
-        </div>
-        <span>{{post.description}}</span>
-        <app-point-simple-card [data]="post.spots.at(0) " />
-        @if(post.spots.length>1){
-        <div class="two-columns">
-            <span>{{post.numSpots}} Lugares</span>
-            <button (click)="togglePostExpansion(post.name)"><img src="display-icon.png" alt="Desplegar mas lugares"
-                    class="icon"></button>
-        </div>
-        }
-    
-        <div class="expanded-posts">
-            @if(expandedPosts.has(post.name)){
-            @for (spot of post.spots.slice(1); track spot.name) {
-            <app-point-simple-card [data]="spot" />
-            }
-            }
-        </div>
-        }
-    </div>
-</div>

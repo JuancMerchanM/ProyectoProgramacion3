@@ -98,6 +98,15 @@
   color: #1976D2;
 }
 
+.publish-btn {
+  color: #4CAF50;
+}
+
+.publish-btn:hover {
+  background-color: #E8F5E9;
+  color: #388E3C;
+}
+
 .edit-btn {
   color: #FF9800;
 }

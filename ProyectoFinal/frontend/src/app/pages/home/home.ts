@@ -14,9 +14,10 @@ import { Subscription } from 'rxjs';
 
 import { MapService } from 'app/map-management/map-service';
 import { OsrmService } from 'app/route-management/osrm.service';
+import { CreatePost } from 'app/post-management/create-post/create-post';
 @Component({
   selector: 'app-home',
-  imports: [CommonModule, ShowMap, UserList, ListPosts, CreateRoute],
+  imports: [CommonModule, ShowMap, UserList, ListPosts, CreateRoute, CreatePost],
   templateUrl: './home.html',
   styleUrl: './home.css'
 })
@@ -29,6 +30,14 @@ export class Home implements OnInit, OnDestroy {
   userRoutes: SimpleRoute[] = [];
   fullRoutes: Route[] = [];
   routeIdMap: Map<string, string> = new Map();
+  
+  // Datos para publicar ruta
+  publishingRoute: {
+    id: string;
+    name: string;
+    distance: number;
+    points: number;
+  } | null = null;
   
   private routesSubscription?: Subscription;
   
@@ -45,7 +54,7 @@ export class Home implements OnInit, OnDestroy {
     this.loadUserRoutes();
     
     this.routesSubscription = this.routeService.routesChanged$.subscribe(() => {
-      console.log('ðŸ”” NotificaciÃ³n de cambio recibida, recargando rutas...');
+      console.log('🔔 Notificación de cambio recibida, recargando rutas...');
       this.loadUserRoutes();
     });
   }
@@ -57,10 +66,10 @@ export class Home implements OnInit, OnDestroy {
   }
 
   loadUserRoutes() {
-    console.log('ðŸ”„ Cargando rutas del usuario...');
+    console.log('🔄 Cargando rutas del usuario...');
     this.routeService.getUserRoutes().subscribe({
       next: (routes) => {
-        console.log('ðŸ“¦ Rutas recibidas del backend:', routes);
+        console.log('📦 Rutas recibidas del backend:', routes);
         
         this.fullRoutes = routes;
         this.routeIdMap.clear();
@@ -71,15 +80,15 @@ export class Home implements OnInit, OnDestroy {
           return {
             name: route.name,
             date: this.formatDate(route.createdAt),
-            privacy: route.isPublic ? 'PÃºblica' : 'Privada',
+            privacy: route.isPublic ? 'Pública' : 'Privada',
             distance: Math.round(route.distance / 1000),
             spots: route.numPoints || 0
           };
         });
-        console.log('âœ… Rutas convertidas:', this.userRoutes);
+        console.log('✅ Rutas convertidas:', this.userRoutes);
       },
       error: (err) => {
-        console.error('âŒ Error al cargar rutas:', err);
+        console.error('❌ Error al cargar rutas:', err);
       }
     });
   }
@@ -99,7 +108,7 @@ export class Home implements OnInit, OnDestroy {
   }
 
   onRouteAction(event: RouteAction) {
-    console.log('ðŸŽ¬ Home - AcciÃ³n recibida:', event);
+    console.log('🎬 Home - Acción recibida:', event);
     
     switch(event.action) {
       case 'view':
@@ -111,43 +120,76 @@ export class Home implements OnInit, OnDestroy {
       case 'delete':
         this.deleteRoute(event.route);
         break;
+      case 'publish':
+        this.publishRoute(event.route);
+        break;
     }
   }
 
-  viewRoute(route: SimpleRoute) {
-    console.log('ðŸ‘ï¸ Ver ruta:', route.name);
+  publishRoute(route: SimpleRoute) {
+    console.log('📤 Publicar ruta:', route.name);
     
     const routeId = this.routeIdMap.get(route.name);
     
     if (!routeId) {
-      console.error('âŒ No se encontrÃ³ el ID para la ruta:', route.name);
+      console.error('❌ No se encontró el ID para la ruta:', route.name);
       return;
     }
 
-    // Cerrar el panel para ver mejor el mapa
+    // Preparar datos para el componente de publicación
+    this.publishingRoute = {
+      id: routeId,
+      name: route.name,
+      distance: route.distance,
+      points: route.spots
+    };
+
+    // Abrir el panel de publicación
+    this.togglePanel('createPost');
+  }
+
+  onPostPublished() {
+    console.log('✅ Post publicado exitosamente');
+    this.publishingRoute = null;
+    this.activePanel = 'posts';
+  }
+
+  onCancelPost() {
+    console.log('❌ Cancelar publicación');
+    this.publishingRoute = null;
+    this.panelOpen = false;
+  }
+
+  viewRoute(route: SimpleRoute) {
+    console.log('👁️ Ver ruta:', route.name);
+    
+    const routeId = this.routeIdMap.get(route.name);
+    
+    if (!routeId) {
+      console.error('❌ No se encontró el ID para la ruta:', route.name);
+      return;
+    }
+
     this.panelOpen = false;
 
     this.routeService.getRouteById(routeId).subscribe({
       next: (fullRoute) => {
-        console.log('ðŸ“ Ruta completa obtenida:', fullRoute);
+        console.log('🗺 Ruta completa obtenida:', fullRoute);
         
-        // Extraer coordenadas de los puntos
         const coordinates = fullRoute.points.map(point => [
           point.location.lng,
           point.location.lat
         ]);
 
-        // Recalcular la ruta con OSRM para obtener la geometrÃ­a
         this.osrmService.calculateRoute(coordinates).subscribe({
           next: (routeCalculation) => {
             const map = this.mapService.getMap();
             
-            // Dibujar la ruta en el mapa
             this.routeService.drawRouteOnMap(
               map,
               routeCalculation.geometry,
               routeCalculation.coordinates,
-              [], // Sin puntos cercanos
+              [],
               {
                 origin: fullRoute.points[0],
                 destination: fullRoute.points[fullRoute.points.length - 1],
@@ -155,44 +197,40 @@ export class Home implements OnInit, OnDestroy {
               }
             );
 
-            // Mostrar marcadores solo de los puntos de la ruta
             this.mapService.clearAllMarkers();
             this.mapService.addPoints(fullRoute.points);
 
-            console.log('âœ… Ruta dibujada en el mapa');
+            console.log('✅ Ruta dibujada en el mapa');
           },
           error: (err) => {
-            console.error('âŒ Error al calcular geometrÃ­a:', err);
+            console.error('❌ Error al calcular geometría:', err);
             alert('Error al dibujar la ruta en el mapa');
           }
         });
       },
       error: (err) => {
-        console.error('âŒ Error al obtener ruta:', err);
+        console.error('❌ Error al obtener ruta:', err);
         alert('Error al cargar la ruta');
       }
     });
   }
 
   editRoute(route: SimpleRoute) {
-    console.log('âœï¸ Editar ruta:', route.name);
+    console.log('✏️ Editar ruta:', route.name);
     
     const routeId = this.routeIdMap.get(route.name);
     
     if (!routeId) {
-      console.error('âŒ No se encontrÃ³ el ID para la ruta:', route.name);
+      console.error('❌ No se encontró el ID para la ruta:', route.name);
       return;
     }
 
-    // Obtener la ruta completa
     this.routeService.getRouteById(routeId).subscribe({
       next: (fullRoute) => {
-        console.log('ðŸ“ Cargando ruta para ediciÃ³n:', fullRoute);
+        console.log('🗺 Cargando ruta para edición:', fullRoute);
         
-        // Abrir el panel de crear ruta
         this.togglePanel('createRoute');
         
-        // Esperar a que el componente se renderice
         setTimeout(() => {
           if (this.createRouteComponent) {
             this.createRouteComponent.loadRouteForEdit(fullRoute);
@@ -200,30 +238,30 @@ export class Home implements OnInit, OnDestroy {
         }, 100);
       },
       error: (err) => {
-        console.error('âŒ Error al cargar ruta para ediciÃ³n:', err);
-        alert('Error al cargar la ruta para ediciÃ³n');
+        console.error('❌ Error al cargar ruta para edición:', err);
+        alert('Error al cargar la ruta para edición');
       }
     });
   }
 
   deleteRoute(route: SimpleRoute) {
-    console.log('ðŸ—‘ï¸ Eliminar ruta:', route.name);
+    console.log('🗑️ Eliminar ruta:', route.name);
     
     const routeId = this.routeIdMap.get(route.name);
     
     if (!routeId) {
-      console.error('âŒ No se encontrÃ³ el ID para la ruta:', route.name);
+      console.error('❌ No se encontró el ID para la ruta:', route.name);
       return;
     }
     
-    if (confirm(`Â¿EstÃ¡s seguro de que deseas eliminar la ruta "${route.name}"?\n\nEsta acciÃ³n no se puede deshacer.`)) {
+    if (confirm(`¿Estás seguro de que deseas eliminar la ruta "${route.name}"?\n\nEsta acción no se puede deshacer.`)) {
       this.routeService.deleteRoute(routeId).subscribe({
         next: () => {
-          console.log('âœ… Ruta eliminada exitosamente');
+          console.log('✅ Ruta eliminada exitosamente');
           alert(`La ruta "${route.name}" ha sido eliminada.`);
         },
         error: (err) => {
-          console.error('âŒ Error al eliminar ruta:', err);
+          console.error('❌ Error al eliminar ruta:', err);
           alert('Error al eliminar la ruta. Por favor intenta de nuevo.');
         }
       });
@@ -231,7 +269,7 @@ export class Home implements OnInit, OnDestroy {
   }
 
   onCreateRouteClick() {
-    console.log('âž• Crear nueva ruta');
+    console.log('➕ Crear nueva ruta');
     this.togglePanel('createRoute');
   }
 

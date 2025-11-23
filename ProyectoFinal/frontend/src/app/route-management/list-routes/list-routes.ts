@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { SimpleRoute } from 'app/interfaces/SimpleRoute.interface';
 
 export interface RouteAction {
-  action: 'view' | 'edit' | 'delete';
+  action: 'view' | 'edit' | 'delete' | 'publish';
   route: SimpleRoute;
 }
 
@@ -25,7 +25,7 @@ export class ListRoutes implements OnChanges {
     }
   }
 
-  onAction(action: 'view' | 'edit' | 'delete', route: SimpleRoute) {
+  onAction(action: 'view' | 'edit' | 'delete' | 'publish', route: SimpleRoute) {
     console.log(`🎬 Acción: ${action} en ruta:`, route.name);
     this.routeAction.emit({ action, route });
   }

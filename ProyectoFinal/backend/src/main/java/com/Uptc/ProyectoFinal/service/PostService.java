@@ -1,5 +1,6 @@
 package com.Uptc.ProyectoFinal.service;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.Uptc.ProyectoFinal.entity.*;
 import com.Uptc.ProyectoFinal.repository.*;
+import com.Uptc.ProyectoFinal.dto.*;
 
 @Service
 public class PostService {
@@ -30,7 +32,7 @@ public class PostService {
     /**
      * Crear una nueva publicación
      */
-    public RoutePost createPost(String routeId, String description, Double rating) {
+    public PostDTO createPost(String routeId, String description, Double rating) {
         Route route = routeRepository.findById(routeId)
                 .orElseThrow(() -> new RuntimeException("Ruta no encontrada"));
 
@@ -52,22 +54,29 @@ public class PostService {
         post.setRating(rating);
         post.setActive(true);
 
-        return postRepository.save(post);
+        RoutePost savedPost = postRepository.save(post);
+        return convertToDTO(savedPost);
     }
 
     /**
      * Obtener todas las publicaciones activas
      */
-    public List<RoutePost> getActivePosts() {
-        return postRepository.findByIsActiveOrderByPublishedAtDesc(true);
+    public List<PostDTO> getActivePosts() {
+        List<RoutePost> posts = postRepository.findByIsActiveOrderByPublishedAtDesc(true);
+        return posts.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     /**
      * Obtener publicaciones del usuario actual
      */
-    public List<RoutePost> getUserPosts() {
+    public List<PostDTO> getUserPosts() {
         User user = getCurrentUser();
-        return postRepository.findByRoute_CreatedByOrderByPublishedAtDesc(user);
+        List<RoutePost> posts = postRepository.findByRoute_CreatedByOrderByPublishedAtDesc(user);
+        return posts.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -91,11 +100,50 @@ public class PostService {
     /**
      * Actualizar rating de una publicación
      */
-    public RoutePost updateRating(String postId, Double rating) {
+    public PostDTO updateRating(String postId, Double rating) {
         RoutePost post = postRepository.findById(postId)
                 .orElseThrow(() -> new RuntimeException("Publicación no encontrada"));
 
         post.setRating(rating);
-        return postRepository.save(post);
+        RoutePost updatedPost = postRepository.save(post);
+        return convertToDTO(updatedPost);
+    }
+
+    /**
+     * Convertir RoutePost a PostDTO
+     */
+    private PostDTO convertToDTO(RoutePost post) {
+        PostDTO dto = new PostDTO();
+        dto.setId(post.getId());
+        dto.setDescription(post.getDescription());
+        dto.setActive(post.isActive());
+        dto.setRating(post.getRating());
+        dto.setPublishedAt(post.getPublishedAt());
+
+        // Convertir Route a RouteInfo
+        Route route = post.getRoute();
+        PostDTO.RouteInfo routeInfo = new PostDTO.RouteInfo();
+        routeInfo.setId(route.getId());
+        routeInfo.setName(route.getName());
+        routeInfo.setDistance(route.getDistance());
+        routeInfo.setNumPoints(route.getNumPoints());
+        
+        // Incluir puntos de la ruta
+        if (route.getPoints() != null) {
+            routeInfo.setPoints(route.getPoints());
+        }
+
+        // Incluir información del usuario creador
+        User creator = route.getCreatedBy();
+        if (creator != null) {
+            PostDTO.UserInfo userInfo = new PostDTO.UserInfo(
+                creator.getUsername(),
+                creator.getEmail()
+            );
+            routeInfo.setCreatedBy(userInfo);
+        }
+
+        dto.setRoute(routeInfo);
+        return dto;
     }
 }

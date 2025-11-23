@@ -7,10 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.Uptc.ProyectoFinal.entity.*;
+
 
 import com.Uptc.ProyectoFinal.service.*;
-
+import com.Uptc.ProyectoFinal.dto.*;
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping("/posts")
@@ -23,14 +23,14 @@ public class PostController {
      * Crear una nueva publicación
      */
     @PostMapping
-    public ResponseEntity<RoutePost> createPost(@RequestBody Map<String, Object> request) {
+    public ResponseEntity<PostDTO> createPost(@RequestBody Map<String, Object> request) {
         try {
             String routeId = (String) request.get("routeId");
             String description = (String) request.get("description");
             Double rating = request.get("rating") != null ? 
                 ((Number) request.get("rating")).doubleValue() : null;
             
-            RoutePost post = postService.createPost(routeId, description, rating);
+            PostDTO post = postService.createPost(routeId, description, rating);
             return ResponseEntity.ok(post);
             
         } catch (Exception e) {
@@ -43,7 +43,7 @@ public class PostController {
      * Obtener todas las publicaciones activas
      */
     @GetMapping("/active")
-    public ResponseEntity<List<RoutePost>> getActivePosts() {
+    public ResponseEntity<List<PostDTO>> getActivePosts() {
         return ResponseEntity.ok(postService.getActivePosts());
     }
 
@@ -51,7 +51,7 @@ public class PostController {
      * Obtener publicaciones del usuario actual
      */
     @GetMapping("/user")
-    public ResponseEntity<List<RoutePost>> getUserPosts() {
+    public ResponseEntity<List<PostDTO>> getUserPosts() {
         return ResponseEntity.ok(postService.getUserPosts());
     }
 
@@ -68,11 +68,11 @@ public class PostController {
      * Actualizar rating de una publicación
      */
     @PatchMapping("/{id}/rating")
-    public ResponseEntity<RoutePost> updateRating(
+    public ResponseEntity<PostDTO> updateRating(
             @PathVariable String id, 
             @RequestBody Map<String, Object> request) {
         Double rating = ((Number) request.get("rating")).doubleValue();
-        RoutePost updatedPost = postService.updateRating(id, rating);
+        PostDTO updatedPost = postService.updateRating(id, rating);
         return ResponseEntity.ok(updatedPost);
     }
 }

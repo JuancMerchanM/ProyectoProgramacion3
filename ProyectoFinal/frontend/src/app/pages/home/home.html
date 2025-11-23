@@ -50,6 +50,15 @@
             @if (activePanel === 'createRoute') {
             <app-create-route />
             }
+            @if (activePanel === 'createPost' && publishingRoute) {
+            <app-create-post 
+                [routeId]="publishingRoute.id"
+                [routeName]="publishingRoute.name"
+                [routeDistance]="publishingRoute.distance"
+                [routePoints]="publishingRoute.points"
+                (published)="onPostPublished()"
+                (cancel)="onCancelPost()" />
+            }
         </div>
     </div>
 </div>
