@@ -22,6 +22,7 @@
                 <img src="add-icon.png" alt="create route">
                 <span class="tooltip">Create route</span>
             </button>
+
             <button (click)="logout()">
                 <img src="logout.png" alt="cerrar sesion">
                 <span class="tooltip">Cerrar sesion</span>
@@ -35,7 +36,13 @@
         <!-- CONTENIDO EXPANDIBLE -->
         <div class="panel-content" [class.visible]="panelOpen">
             @if (activePanel === 'user') {
-            <app-user-list [username]="user?.username" [email]="user?.email" [lenPassword]="user?.lenPassword ?? 0"/>
+            <app-user-list 
+                [username]="user?.username" 
+                [email]="user?.email" 
+                [lenPassword]="user?.lenPassword ?? 0"
+                [routes]="userRoutes"
+                (routeAction)="onRouteAction($event)"
+                (createRoute)="onCreateRouteClick()" />
             }
             @if (activePanel === 'posts') {
             <app-list-posts />

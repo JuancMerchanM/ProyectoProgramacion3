@@ -1,56 +1,69 @@
 <div class="route-creator-container">
+    <!-- Título dinámico -->
+    <h2 class="form-title">
+        @if (editingRouteId) {
+            ✏️ Editando Ruta
+        } @else {
+            ➕ Crear Nueva Ruta
+        }
+    </h2>
+
     <!-- Nombre de la ruta -->
     <div class="form-group-inline">
         <label for="routeName">Nombre de la ruta</label>
         <input id="routeName" type="text" placeholder="Mi nueva ruta" [(ngModel)]="routeName" name="routeName" required />
     </div>
 
-    <!-- Selección de puntos -->
+    <!-- Puntos seleccionados en orden -->
     <div class="points-section">
-        <h3>Puntos de la Ruta</h3>
+        <h3>Tu Ruta</h3>
         
-        <!-- Punto de origen -->
-        <div class="point-selector">
-            <label>Punto de Partida</label>
-            @if (originPoint) {
-                <div class="selected-point">
-                    <span>{{originPoint.name}}</span>
-                    <button type="button" (click)="originPoint = null; clearCalculatedRoute()">
-                        <img src="remove-icon.png" alt="Eliminar">
-                    </button>
-                </div>
-            } @else {
-                <p class="no-selection">Selecciona un punto de partida de las recomendaciones</p>
-            }
-        </div>
-
-        <!-- Puntos intermedios -->
-        @if (waypointPoints.length > 0) {
-            <div class="waypoints-section">
-                <label>Puntos Intermedios</label>
-                @for (waypoint of waypointPoints; track waypoint.id; let i = $index) {
-                    <div class="selected-point">
-                        <span>{{waypoint.name}}</span>
-                        <button type="button" (click)="removeWaypoint(i)">
-                            <img src="remove-icon.png" alt="Eliminar">
-                        </button>
-                    </div>
-                }
-            </div>
+        @if (!originPoint && !destinationPoint && waypointPoints.length === 0) {
+            <p class="empty-state">👇 Selecciona lugares de la lista para crear tu ruta</p>
         }
 
-        <!-- Punto de destino -->
-        <div class="point-selector">
-            <label>Punto de Destino</label>
-            @if (destinationPoint) {
-                <div class="selected-point">
-                    <span>{{destinationPoint.name}}</span>
-                    <button type="button" (click)="destinationPoint = null; clearCalculatedRoute()">
-                        <img src="remove-icon.png" alt="Eliminar">
+        <!-- Mostrar puntos en orden -->
+        <div class="selected-points-list">
+            @if (originPoint) {
+                <div class="selected-point-card origin">
+                    <div class="point-badge">1</div>
+                    <div class="point-details">
+                        <span class="point-label">Inicio</span>
+                        <span class="point-name">{{originPoint.name}}</span>
+                        <span class="point-municipality">{{originPoint.municipality}}</span>
+                    </div>
+                    <button type="button" class="btn-remove" (click)="removePoint(originPoint, 'origin')">
+                        ✕
                     </button>
                 </div>
-            } @else {
-                <p class="no-selection">Selecciona un punto de destino de las recomendaciones</p>
+            }
+
+            @for (waypoint of waypointPoints; track waypoint.id; let i = $index) {
+                <div class="selected-point-card waypoint">
+                    <div class="point-badge">{{i + 2}}</div>
+                    <div class="point-details">
+                        <span class="point-label">Parada</span>
+                        <span class="point-name">{{waypoint.name}}</span>
+                        <span class="point-municipality">{{waypoint.municipality}}</span>
+                    </div>
+                    <button type="button" class="btn-remove" (click)="removePoint(waypoint, 'waypoint', i)">
+                        ✕
+                    </button>
+                </div>
+            }
+
+            @if (destinationPoint) {
+                <div class="selected-point-card destination">
+                    <div class="point-badge">{{2 + waypointPoints.length}}</div>
+                    <div class="point-details">
+                        <span class="point-label">Destino</span>
+                        <span class="point-name">{{destinationPoint.name}}</span>
+                        <span class="point-municipality">{{destinationPoint.municipality}}</span>
+                    </div>
+                    <button type="button" class="btn-remove" (click)="removePoint(destinationPoint, 'destination')">
+                        ✕
+                    </button>
+                </div>
             }
         </div>
     </div>
@@ -63,40 +76,72 @@
                 <span class="value">{{distance}} km</span>
             </div>
             <div class="info-item">
-                <span class="label">Duración estimada:</span>
+                <span class="label">Duración:</span>
                 <span class="value">{{duration}} min</span>
             </div>
         </div>
+
+        <!-- Puntos cercanos a la ruta -->
+        @if (nearbyPoints.length > 0) {
+            <div class="nearby-section" [class.recalculating]="isCalculating">
+                <h4>
+                    <span class="icon">📍</span>
+                    Lugares cerca de tu ruta ({{nearbyPoints.length}})
+                    @if (isCalculating) {
+                        <span class="recalc-badge">Recalculando...</span>
+                    }
+                </h4>
+                <p class="nearby-description">
+                    Haz click para agregarlos a tu ruta
+                </p>
+                <div class="nearby-list">
+                    @for (point of nearbyPoints; track point.id) {
+                        <div class="nearby-item" (click)="selectPoint(point)">
+                            <div class="nearby-info">
+                                <span class="nearby-name">{{point.name}}</span>
+                                <span class="nearby-category">{{point.category}}</span>
+                                <span class="nearby-municipality">{{point.municipality}}</span>
+                            </div>
+                            <div class="add-indicator">+</div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
     }
 
     <!-- Botones de acción -->
     <div class="action-buttons">
-        <button 
-            type="button" 
-            class="btn-calculate" 
-            (click)="calculateRoute()"
-            [disabled]="!originPoint || !destinationPoint || isCalculating">
-            @if (isCalculating) {
-                <span>Calculando...</span>
-            } @else {
-                <span>Calcular Ruta</span>
-            }
-        </button>
-
-        <button 
-            type="button" 
-            class="btn-save" 
-            (click)="saveRoute()"
-            [disabled]="!calculatedRoute || !routeName">
-            Guardar Ruta
-        </button>
-
-        <button 
-            type="button" 
-            class="btn-reset" 
-            (click)="resetForm()">
-            Limpiar Todo
-        </button>
+        <!-- Botón principal: Guardar o Guardar Cambios -->
+        @if (editingRouteId) {
+            <button 
+                type="button" 
+                class="btn-save btn-update" 
+                (click)="saveRoute()"
+                [disabled]="!calculatedRoute || !routeName">
+                ✅ Guardar Cambios
+            </button>
+            <button 
+                type="button" 
+                class="btn-cancel" 
+                (click)="cancelEdit()">
+                ❌ Cancelar Edición
+            </button>
+        } @else {
+            <button 
+                type="button" 
+                class="btn-save" 
+                (click)="saveRoute()"
+                [disabled]="!calculatedRoute || !routeName">
+                💾 Guardar Ruta
+            </button>
+            <button 
+                type="button" 
+                class="btn-reset" 
+                (click)="resetForm()">
+                🔄 Empezar de Nuevo
+            </button>
+        }
     </div>
 
     <hr>
@@ -120,36 +165,24 @@
     <!-- Lista de puntos disponibles -->
     <div class="suggested-spots">
         @for (point of filteredPoints; track point.id) {
-            <div class="spot-item" [class.used]="isPointUsed(point)">
+            <div 
+                class="spot-item" 
+                [class.used]="isPointUsed(point)"
+                (click)="!isPointUsed(point) && selectPoint(point)">
+                
+                @if (isPointUsed(point)) {
+                    <div class="order-badge">{{getPointOrder(point)}}</div>
+                }
+                
                 <div class="spot-info">
                     <h4>{{point.name}}</h4>
                     <p class="category">{{point.category}}</p>
                     <p class="municipality">{{point.municipality}}</p>
                 </div>
                 
-                <div class="spot-actions">
-                    <button 
-                        type="button"
-                        (click)="selectOrigin(point)"
-                        [disabled]="isPointUsed(point)"
-                        title="Usar como origen">
-                        O
-                    </button>
-                    <button 
-                        type="button"
-                        (click)="addWaypoint(point)"
-                        [disabled]="isPointUsed(point) || !originPoint"
-                        title="Agregar como punto intermedio">
-                        +
-                    </button>
-                    <button 
-                        type="button"
-                        (click)="selectDestination(point)"
-                        [disabled]="isPointUsed(point)"
-                        title="Usar como destino">
-                        D
-                    </button>
-                </div>
+                @if (!isPointUsed(point)) {
+                    <div class="click-hint">👆 Click para agregar</div>
+                }
             </div>
         }
     </div>

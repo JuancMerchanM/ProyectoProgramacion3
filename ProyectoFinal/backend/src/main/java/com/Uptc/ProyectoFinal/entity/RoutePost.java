@@ -2,6 +2,8 @@ package com.Uptc.ProyectoFinal.entity;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -16,9 +18,11 @@ import jakarta.persistence.Table;
 @Table(name = "posts")
 public class RoutePost {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	  @Id
+	    @GeneratedValue(generator = "UUID")
+	    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+	    @Column(columnDefinition = "CHAR(36)")
+	    private String id;  // Cambiar de Long a String
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "route_id")
@@ -36,11 +40,11 @@ public class RoutePost {
     @Column(name = "published_at")
     private LocalDateTime publishedAt = LocalDateTime.now();
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

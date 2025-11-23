@@ -1,5 +1,4 @@
 package com.Uptc.ProyectoFinal.controller;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -16,11 +15,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.Uptc.ProyectoFinal.entity.Route;
-import com.Uptc.ProyectoFinal.service.RouteService;
-import com.Uptc.ProyectoFinal.service.*;
 import com.Uptc.ProyectoFinal.entity.*;
-// Component para RouteSecurity. Verificar pertenencia y autenticacion
+import com.Uptc.ProyectoFinal.dto.*;
+
+import com.Uptc.ProyectoFinal.service.*;
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping("/routes")
@@ -28,9 +26,6 @@ public class RouteController {
 
     @Autowired
     private RouteService routeService;
-    
-    @Autowired
-    private RoutingService routingService;
     
     @Autowired
     private LocationService locationService;
@@ -41,8 +36,10 @@ public class RouteController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Route> getById(@PathVariable String id) {
-        return ResponseEntity.ok(routeService.getById(id));
+    public ResponseEntity<RouteDTO> getById(@PathVariable String id) {
+        Route route = routeService.getById(id);
+        RouteDTO dto = routeService.toDTO(route);
+        return ResponseEntity.ok(dto);
     }
 
     @PostMapping
@@ -51,8 +48,49 @@ public class RouteController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Route> update(@PathVariable String id, @RequestBody Route updated) {
-        return ResponseEntity.ok(routeService.update(id, updated));
+    public ResponseEntity<Route> update(@PathVariable String id, @RequestBody Map<String, Object> request) {
+        try {
+            System.out.println("=== ACTUALIZANDO RUTA " + id + " ===");
+            
+            String name = (String) request.get("name");
+            
+            // Manejar pointIds
+            List<?> rawPointIds = (List<?>) request.get("pointIds");
+            List<String> pointIds = new ArrayList<>();
+            for (Object pointId : rawPointIds) {
+                pointIds.add(pointId.toString());
+            }
+            
+            Double distance = ((Number) request.get("distance")).doubleValue();
+            Double duration = ((Number) request.get("duration")).doubleValue();
+            
+            // Obtener los puntos por ID
+            List<Location> points = new ArrayList<>();
+            for (String pointId : pointIds) {
+                Location location = locationService.findById(pointId)
+                    .orElseThrow(() -> new RuntimeException("Location no encontrada: " + pointId));
+                points.add(location);
+            }
+            
+            // Crear objeto de actualización
+            Route updatedData = new Route();
+            updatedData.setName(name);
+            updatedData.setPoints(points);
+            updatedData.setDistance(distance);
+            updatedData.setDuration(duration);
+            updatedData.setNumPoints(points.size());
+            
+            System.out.println("=== ACTUALIZANDO EN BASE DE DATOS ===");
+            Route savedRoute = routeService.update(id, updatedData);
+            System.out.println("✅ Ruta actualizada con ID: " + savedRoute.getId());
+            
+            return ResponseEntity.ok(savedRoute);
+            
+        } catch (Exception e) {
+            System.err.println("❌ ERROR al actualizar ruta: " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Error al actualizar la ruta: " + e.getMessage(), e);
+        }
     }
 
     @DeleteMapping("/{id}")
@@ -62,110 +100,51 @@ public class RouteController {
     }
     
     /**
-     * Calcula una ruta entre dos locations usando OSRM
-     * POST /routes/calculate
-     * Body: { "originId": "uuid", "destinationId": "uuid", "waypointIds": ["uuid1", "uuid2"] }
+     * Crea y guarda una ruta con datos ya calculados desde el frontend
      */
-    @PostMapping("/calculate")
-    public ResponseEntity<RoutingService.RouteResponse> calculateRoute(
-            @RequestBody Map<String, Object> request) {
-        
-        String originId = (String) request.get("originId");
-        String destinationId = (String) request.get("destinationId");
-        List<String> waypointIds = (List<String>) request.get("waypointIds");
-        
-        // Obtener coordenadas de origen
-        Location origin = locationService.findById(originId)
-            .orElseThrow(() -> new RuntimeException("Origen no encontrado"));
-        
-        // Obtener coordenadas de destino
-        Location destination = locationService.findById(destinationId)
-            .orElseThrow(() -> new RuntimeException("Destino no encontrado"));
-        
-        // Construir lista de coordenadas [lng, lat]
-        List<double[]> coordinates = new ArrayList<>();
-        coordinates.add(new double[]{
-            origin.getLocation().getLng(),
-            origin.getLocation().getLat()
-        });
-        
-        // Agregar waypoints si existen
-        if (waypointIds != null && !waypointIds.isEmpty()) {
-            for (String wpId : waypointIds) {
-                Location waypoint = locationService.findById(wpId)
-                    .orElseThrow(() -> new RuntimeException("Waypoint no encontrado: " + wpId));
-                coordinates.add(new double[]{
-                    waypoint.getLocation().getLng(),
-                    waypoint.getLocation().getLat()
-                });
+    @PostMapping("/create-with-data")
+    public ResponseEntity<Route> createWithData(@RequestBody Map<String, Object> request) {
+        try {
+            System.out.println("=== RECIBIENDO PETICIÓN PARA CREAR RUTA ===");
+            
+            String name = (String) request.get("name");
+            
+            // Manejar pointIds
+            List<?> rawPointIds = (List<?>) request.get("pointIds");
+            List<String> pointIds = new ArrayList<>();
+            for (Object id : rawPointIds) {
+                pointIds.add(id.toString());
             }
-        }
-        
-        // Agregar destino
-        coordinates.add(new double[]{
-            destination.getLocation().getLng(),
-            destination.getLocation().getLat()
-        });
-        
-        // Calcular ruta
-        RoutingService.RouteResponse routeResponse = routingService.calculateRoute(coordinates);
-        
-        return ResponseEntity.ok(routeResponse);
-    }
-    
-    /**
-     * Crea y guarda una ruta calculada
-     * POST /routes/create-from-calculation
-     */
-    @PostMapping("/create-from-calculation")
-    public ResponseEntity<Route> createFromCalculation(@RequestBody Map<String, Object> request) {
-        String name = (String) request.get("name");
-        String originId = (String) request.get("originId");
-        String destinationId = (String) request.get("destinationId");
-        List<String> waypointIds = (List<String>) request.get("waypointIds");
-        
-        // Calcular ruta primero
-        List<double[]> coordinates = new ArrayList<>();
-        List<Location> points = new ArrayList<>();
-        
-        Location origin = locationService.findById(originId)
-            .orElseThrow(() -> new RuntimeException("Origen no encontrado"));
-        points.add(origin);
-        coordinates.add(new double[]{
-            origin.getLocation().getLng(),
-            origin.getLocation().getLat()
-        });
-        
-        if (waypointIds != null) {
-            for (String wpId : waypointIds) {
-                Location wp = locationService.findById(wpId).orElseThrow();
-                points.add(wp);
-                coordinates.add(new double[]{
-                    wp.getLocation().getLng(),
-                    wp.getLocation().getLat()
-                });
+            
+            Double distance = ((Number) request.get("distance")).doubleValue();
+            Double duration = ((Number) request.get("duration")).doubleValue();
+            
+            // Obtener los puntos por ID
+            List<Location> points = new ArrayList<>();
+            for (String pointId : pointIds) {
+                Location location = locationService.findById(pointId)
+                    .orElseThrow(() -> new RuntimeException("Location no encontrada: " + pointId));
+                points.add(location);
             }
+            
+            // Crear la ruta
+            Route route = new Route();
+            route.setName(name);
+            route.setPoints(points);
+            route.setDistance(distance);
+            route.setDuration(duration);
+            route.setNumPoints(points.size());
+            
+            System.out.println("=== GUARDANDO RUTA ===");
+            Route savedRoute = routeService.create(route);
+            System.out.println("✅ Ruta guardada con ID: " + savedRoute.getId());
+            
+            return ResponseEntity.ok(savedRoute);
+            
+        } catch (Exception e) {
+            System.err.println("❌ ERROR al crear ruta: " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Error al crear la ruta: " + e.getMessage(), e);
         }
-        
-        Location destination = locationService.findById(destinationId)
-            .orElseThrow(() -> new RuntimeException("Destino no encontrado"));
-        points.add(destination);
-        coordinates.add(new double[]{
-            destination.getLocation().getLng(),
-            destination.getLocation().getLat()
-        });
-        
-        RoutingService.RouteResponse routeResponse = routingService.calculateRoute(coordinates);
-        
-        // Crear entidad Route
-        Route route = new Route();
-        route.setName(name);
-        route.setPoints(points);
-        route.setDistance(routeResponse.getDistance());
-        route.setDuration(routeResponse.getDuration());
-        route.setPath(routeResponse.getGeometry());
-        route.setNumPoints(points.size());
-        
-        return ResponseEntity.ok(routeService.create(route));
     }
 }

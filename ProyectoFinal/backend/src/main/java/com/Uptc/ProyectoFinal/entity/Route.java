@@ -4,11 +4,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
@@ -17,28 +18,33 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "rutas")
+@Table(name = "routes")
 public class Route {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(columnDefinition = "CHAR(36)")
+    private String id;
 
     @Column(nullable = false)
     private String name;
 
-    // Relación con lugares
+    // Relación con lugares (ORDEN IMPORTA)
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "route_points", joinColumns = @JoinColumn(name = "route_id"), inverseJoinColumns = @JoinColumn(name = "location_id"))
+    @JoinTable(
+        name = "route_points", 
+        joinColumns = @JoinColumn(name = "route_id"), 
+        inverseJoinColumns = @JoinColumn(name = "location_id")
+    )
     private List<Location> points = new ArrayList<>();
 
     @Column(nullable = false)
-    private Double distance; // Total en metros o km
+    private Double distance; // Total en metros
 
     @Column
-    private Double duration; // Estimado en minutos u horas
+    private Double duration; // En segundos
 
-    @Column(columnDefinition = "LONGTEXT", nullable = false)
-    private String path;
+    // ❌ ELIMINADO: path (ya no guardamos la geometría)
 
     @Column(name = "is_public", nullable = false)
     private boolean isPublic = false;
@@ -53,11 +59,12 @@ public class Route {
     @Column(name = "num_points")
     private Integer numPoints;
 
-    public Long getId() {
+    // Getters y Setters
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -124,13 +131,4 @@ public class Route {
     public void setNumPoints(Integer numPoints) {
         this.numPoints = numPoints;
     }
-
-	public String getPath() {
-		return path;
-	}
-
-	public void setPath(String path) {
-		this.path = path;
-	}
-
 }
