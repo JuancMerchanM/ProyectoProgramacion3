@@ -33,7 +33,7 @@ public class RouteService {
         return routeRepository.findByCreatedBy(user);
     }
 
-    public Route getById(String id) {
+    public Route getById(Long id) {
         return routeRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Ruta no encontrada"));
     }
@@ -44,7 +44,7 @@ public class RouteService {
         return routeRepository.save(route);
     }
 
-    public Route update(String id, Route updated) {
+    public Route update(Long id, Route updated) {
         Route existing = getById(id);
         if (!existing.getCreatedBy().equals(getCurrentUser())) {
             throw new RuntimeException("No tienes permiso para modificar esta ruta");
@@ -57,7 +57,7 @@ public class RouteService {
         return routeRepository.save(existing);
     }
 
-    public void delete(String id) {
+    public void delete(Long id) {
         Route existing = getById(id);
         if (!existing.getCreatedBy().equals(getCurrentUser())) {
             throw new RuntimeException("No tienes permiso para eliminar esta ruta");

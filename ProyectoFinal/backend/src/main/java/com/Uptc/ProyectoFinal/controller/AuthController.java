@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.Uptc.ProyectoFinal.dto.AuthResponse;
 import com.Uptc.ProyectoFinal.dto.LoginRequest;
-import com.Uptc.ProyectoFinal.dto.RegisterRequest;
 import com.Uptc.ProyectoFinal.dto.ResetPasswordRequest;
 import com.Uptc.ProyectoFinal.service.AuthService;
 
@@ -27,15 +26,6 @@ public class AuthController {
 
     public AuthController(AuthService as) {
         this.authService = as;
-    }
-
-    @PostMapping("/register")
-    public ResponseEntity<Map<String, String>> register(@RequestBody RegisterRequest request) {
-        boolean successfulRegister = authService.register(request);
-        if (!successfulRegister) {
-            return ResponseEntity.ok(Map.of("error", "Email o username ya en uso."));
-        }
-        return ResponseEntity.ok(Map.of("msg", "usuario registrado exitosamente."));
     }
 
     @PostMapping(path = "/login", produces = MediaType.APPLICATION_JSON_VALUE)

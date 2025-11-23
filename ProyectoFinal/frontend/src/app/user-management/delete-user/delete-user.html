@@ -1,0 +1,17 @@
+<div class="container">
+    <form class="form" #form="ngForm">
+        <p class="info">
+            Ingrese su contraseña actual para confirma la eliminacion permanente de la cuenta.
+        </p>
+        <app-input-field class="mb-20" name="password" id="password"  [(ngModel)]="password" label="Contraseña actual" type="password"
+            [required]="true" />
+
+        @if (errorMessage) {
+        <p class="error-message">
+            {{errorMessage}}
+        </p>
+        }
+
+        <button class="button" (click)="onSubmit(form)" [disabled]="form.invalid">Eliminar cuenta</button>
+    </form>
+</div>

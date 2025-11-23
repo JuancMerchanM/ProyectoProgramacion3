@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { catchError, throwError, tap } from 'rxjs';
 import { LoggedInUser } from 'app/interfaces/LoggedInUser.interface';
+import { UserService } from 'app/user-management/user-service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,27 +12,30 @@ import { LoggedInUser } from 'app/interfaces/LoggedInUser.interface';
 export class AuthenticationService {
   private apiUrl = 'http://localhost:8035/auth';
 
-  user = signal<LoggedInUser | null>(null);
-
-  constructor(private http: HttpClient, private router: Router) {
-    const saved = localStorage.getItem('user');
-    if (saved) {
-      this.user.set(JSON.parse(saved));
-    }
-   }
+  constructor(private http: HttpClient, private router: Router, private userService: UserService) { }
 
   login(usernameOrEmail: string, password: string) {
-    return this.http.post<{ token: string; username: string, email: string }>(`${this.apiUrl}/login`, { usernameOrEmail, password })
+    return this.http.post<{ id: number, token: string; username: string, email: string }>(`${this.apiUrl}/login`, { usernameOrEmail, password })
       .pipe(
-      tap(res => {
-        localStorage.setItem('token', res.token);
-        localStorage.setItem('user', JSON.stringify({ username: res.username, email: res.email, lenPassword: password.length }));
-        this.router.navigate(['/home']);
-      }),
-      catchError(err => {
-        return throwError(() => err); 
-      })
-    );
+        tap(res => {
+
+          const logged: LoggedInUser = {
+            id: res.id,
+            username: res.username,
+            email: res.email,
+            lenPassword: password.length
+          };
+
+          localStorage.setItem('token', res.token);
+          localStorage.setItem('user', JSON.stringify(logged));
+          this.userService.updateLocalUser(logged);
+
+          this.router.navigate(['/home']);
+        }),
+        catchError(err => {
+          return throwError(() => err);
+        })
+      );
   }
 
   logout() {
@@ -42,9 +46,9 @@ export class AuthenticationService {
 
   forgotPassword(email: string): Observable<string> {
     const params = new HttpParams().set('email', email);
-    return this.http.post(`${this.apiUrl}/forgot-password`, null, { 
+    return this.http.post(`${this.apiUrl}/forgot-password`, null, {
       params,
-      responseType: 'text' 
+      responseType: 'text'
     });
   }
 

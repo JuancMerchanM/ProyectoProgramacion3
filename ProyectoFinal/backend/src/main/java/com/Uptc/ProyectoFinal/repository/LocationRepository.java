@@ -9,6 +9,6 @@ import com.Uptc.ProyectoFinal.entity.Location;
 import com.Uptc.ProyectoFinal.entity.LocationCategory;
 
 @Repository
-public interface LocationRepository extends JpaRepository<Location, String> {
+public interface LocationRepository extends JpaRepository<Location, Long> {
     List<Location> findByCategory(LocationCategory category);
 }

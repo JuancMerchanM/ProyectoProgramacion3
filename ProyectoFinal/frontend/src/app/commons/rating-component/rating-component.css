@@ -1,0 +1,36 @@
+.stars {
+  font-size: 32px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.star {
+  color: #ccc; /* color apagado */
+  transition: color 0.15s;
+  padding: 4px;
+}
+
+.star.active {
+  color: black; /* estrella activa */
+}
+
+.actions {
+  margin-top: 8px;
+  display: flex;
+  gap: 12px;
+  font-size: 14px;
+}
+
+.confirm, .cancel{
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.confirm {
+  color: green;
+  
+}
+
+.cancel {
+  color: red;
+}

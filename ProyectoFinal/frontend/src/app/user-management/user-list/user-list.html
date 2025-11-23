@@ -1,27 +1,8 @@
 <div class="container">
     <img src="Logo.png" class="avatar" style="align-self: center; margin-bottom: 22px;">
     <span style="align-self: center; margin-bottom: 22px;">{{username}}</span>
-    <app-input-box lbText="Correo" text="{{email}}" />
-    <app-input-box lbText="Contraseña" text="{{createStars(lenPassword)}}" />
+    <app-input-box label="Correo" [(value)]="email" />
+    <app-input-box label="Contraseña" [value]="password" />
 
-    <div class="routes-header">
-        <span class="title">Mis rutas</span>
-        <span class="icon">+</span>
-    </div>
-    <hr class="divider">
-    <div class="routes-scroll">
-        <app-list-routes [routes]="[
-      { name: 'Ruta del Café Boyacense', date: '2025-03-21', privacy: 'Pública', distance: 125, spots: 8 },
-      { name: 'Aventura en la Sierra Nevada', date: '2025-04-10', privacy: 'Privada', distance: 312, spots: 12 },
-      { name: 'Tour por los Pueblos Patrimonio', date: '2025-05-02', privacy: 'Pública', distance: 450, spots: 15 },
-      { name: 'Ruta Ecológica del Cocuy', date: '2025-06-15', privacy: 'Privada', distance: 210, spots: 9 },
-      { name: 'Costa Caribe Express', date: '2025-07-08', privacy: 'Pública', distance: 580, spots: 11 },
-      { name: 'Reto Altiplano Cundiboyacense', date: '2025-08-16', privacy: 'Privada', distance: 320, spots: 10 },
-      { name: 'Travesía del Desierto de la Tatacoa', date: '2025-09-05', privacy: 'Pública', distance: 460, spots: 13 },
-      { name: 'Exploración del Amazonas Colombiano', date: '2025-10-12', privacy: 'Privada', distance: 710, spots: 7 },
-      { name: 'Ruta Gastronómica del Pacífico', date: '2025-11-03', privacy: 'Pública', distance: 390, spots: 14 },
-      { name: 'Camino Real de Barichara', date: '2025-12-20', privacy: 'Privada', distance: 98, spots: 6 }
-    ]">
-        </app-list-routes>
-    </div>
+    <button class="button" (click)="manageAccount.emit()">Gestionar cuenta</button>
 </div>

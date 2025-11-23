@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import com.Uptc.ProyectoFinal.dto.AuthResponse;
 import com.Uptc.ProyectoFinal.dto.LoginRequest;
-import com.Uptc.ProyectoFinal.dto.RegisterRequest;
 import com.Uptc.ProyectoFinal.entity.User;
 import com.Uptc.ProyectoFinal.repository.UserRepository;
 
@@ -45,21 +44,7 @@ public class AuthService {
         }
 
         String token = jwtService.generateToken(user.getUsername());
-        return new AuthResponse(token, user.getUsername(), user.getEmail());
-    }
-
-    public boolean register(RegisterRequest request) {
-        if (userRepository.existsByEmail(request.getEmail()) ||
-                userRepository.existsByUsername(request.getUsername())) {
-            return false;
-        }
-
-        User user = new User();
-        user.setUsername(request.getUsername());
-        user.setEmail(request.getEmail());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        userRepository.save(user);
-        return true;
+        return new AuthResponse(user.getId() ,token, user.getUsername(), user.getEmail());
     }
 
     public boolean sendPasswordResetEmail(String email) {

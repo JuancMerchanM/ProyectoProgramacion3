@@ -1,6 +1,7 @@
 package com.Uptc.ProyectoFinal.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.Uptc.ProyectoFinal.dto.RatingRequest;
 import com.Uptc.ProyectoFinal.entity.Location;
 import com.Uptc.ProyectoFinal.service.LocationService;
 
@@ -32,7 +34,7 @@ public class LocationController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Location> getById(@PathVariable String id) {
+    public ResponseEntity<Location> getById(@PathVariable Long id) {
         return service.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -45,13 +47,20 @@ public class LocationController {
 
     @PostMapping("/")
     public ResponseEntity<Location> create(@RequestBody Location location) {
-        System.out.println(location.toString());
         return ResponseEntity.ok(service.save(location));
+    }
+
+    @PutMapping("/{id}/rating")
+    public ResponseEntity<Map<String, String>> updateRating(
+            @PathVariable Long id,
+            @RequestBody RatingRequest request) {
+
+        return ResponseEntity.ok(service.updateRating(id, request.getRating()));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Location> update(
-            @PathVariable String id,
+            @PathVariable Long id,
             @RequestBody Location updated) {
         return service.findById(id)
                 .map(existing -> {
@@ -62,7 +71,7 @@ public class LocationController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable String id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }

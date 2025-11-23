@@ -11,8 +11,12 @@
         <!-- BOTONES DEL PANEL -->
         <div class="panel-buttons">
             <button (click)="togglePanel('user')">
-                <img src="userProfile-icon.png" alt="user profile">
-                <span class="tooltip">User profile</span>
+                <img src="userProfile-icon.png" alt="Perfil del usuario">
+                <span class="tooltip">Perfil del usuario</span>
+            </button>
+            <button (click)="togglePanel('routes')">
+                <img src="routes.png" alt="Ver mis rutas">
+                <span class="tooltip">Create route</span>
             </button>
             <button (click)="togglePanel('posts')">
                 <img src="posts-icon.png" alt="posts">
@@ -27,7 +31,7 @@
                 <span class="tooltip">Cerrar sesion</span>
             </button>
             <button (click)="filterCategory('water')">
-                <img src="categories/CASCADA.png" alt="marker: water attraction">
+                <img src="categories/cascada.png" alt="marker: water attraction">
                 <span class="tooltip">Water attraction</span>
             </button>
         </div>
@@ -35,7 +39,13 @@
         <!-- CONTENIDO EXPANDIBLE -->
         <div class="panel-content" [class.visible]="panelOpen">
             @if (activePanel === 'user') {
-            <app-user-list [username]="user?.username" [email]="user?.email" [lenPassword]="user?.lenPassword ?? 0"/>
+            <app-user-list (manageAccount)="togglePanel('manageAccount')"/>
+            }
+            @if (activePanel === 'manageAccount') {
+                <app-manage-user (showUser)="togglePanel('user')"/>
+            }
+            @if (activePanel === 'routes') {
+                <app-list-routes />
             }
             @if (activePanel === 'posts') {
             <app-list-posts />

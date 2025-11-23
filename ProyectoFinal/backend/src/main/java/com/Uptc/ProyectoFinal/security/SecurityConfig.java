@@ -34,7 +34,7 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable()).cors(cors->{})
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/**").permitAll()
+                .requestMatchers("/auth/**", "/user/register").permitAll()
                 .anyRequest().authenticated()
             )
             .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults())); 

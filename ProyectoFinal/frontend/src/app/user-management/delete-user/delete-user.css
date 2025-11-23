@@ -1,0 +1,23 @@
+.button {
+  color: white;
+  background-color: #222;
+  font-weight: 500;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  line-height: 2rem;
+  padding-left: 1.4rem;
+  padding-right: 1.4rem;
+  padding-top: 0.2rem;
+  padding-bottom: 0.2rem;
+  cursor: pointer;
+  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  border: none;
+  width: fit-content;
+  align-self: center;
+}
+
+.mb-20{
+  margin-bottom: 20px;
+}

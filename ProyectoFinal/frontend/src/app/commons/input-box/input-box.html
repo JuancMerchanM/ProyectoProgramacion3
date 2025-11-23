@@ -1,6 +1,10 @@
 <div class="form-group">
-  <label class="label">{{lbText}}</label>
-  <div class="input-box">
-    {{ text }}
-  </div>
+  <label class="label">{{label}}</label>
+  @if (editable) {
+    <input type="text" class="input-box" [value]="value" (input)="onInput($event)">
+  }@else {
+    <div class="input-box">
+      {{ value }}
+    </div>
+  }
 </div>

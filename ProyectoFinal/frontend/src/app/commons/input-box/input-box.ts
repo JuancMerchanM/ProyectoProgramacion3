@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-input-box',
@@ -7,6 +7,13 @@ import { Component, Input } from '@angular/core';
   styleUrl: './input-box.css'
 })
 export class InputBox {
-  @Input() text: string = "";
-  @Input() lbText: string = "";
+  @Input() label: string = "";
+  @Input() value: string = "";
+  @Input() editable: boolean = false;
+
+  @Output() valueChange = new EventEmitter<string>();
+
+  onInput(event: any) {
+    this.valueChange.emit(event.target.value);
+  }
 }

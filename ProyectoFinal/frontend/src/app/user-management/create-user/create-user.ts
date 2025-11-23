@@ -57,14 +57,13 @@ export class CreateUser {
     this.userService.createUser(this.user).subscribe({
       next: () => {
         this.errorMessage = '';
-        this.alert.show("Cuenta creada exitosamente", "error", 1200);
+        this.alert.show("Cuenta creada exitosamente", "success", 1200);
         this.isSuccess = true;
 
         setTimeout(() => this.goToLogin.emit(), 1500);
       },
       error: (err) => {
-        console.error(err);
-        this.errorMessage = 'Error creando la cuenta.';
+        this.errorMessage = err.error.error;
         this.isSuccess = false;
       }
     });

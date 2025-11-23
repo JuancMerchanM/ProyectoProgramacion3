@@ -9,6 +9,6 @@ import com.Uptc.ProyectoFinal.entity.Route;
 import com.Uptc.ProyectoFinal.entity.User;
 
 @Repository
-public interface RouteRepository extends JpaRepository<Route, String> {
+public interface RouteRepository extends JpaRepository<Route, Long> {
     List<Route> findByCreatedBy(User user);
 }

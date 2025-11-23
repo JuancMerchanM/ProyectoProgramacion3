@@ -6,9 +6,23 @@
     z-index: 9999;
     display: flex;
     flex-direction: column;
-    width: 350px;
-    max-height: 400px;
+    width: 400px;
+    max-height: 430px;
+    padding-bottom: 10px;;
+
     font-size: 13px;
+
+    background: rgba(255, 255, 255, 0.25); /* transparencia */
+    backdrop-filter: blur(8px) saturate(100%);
+    -webkit-backdrop-filter: blur(8px) saturate(100%);
+
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+
+
+
 }
 
 .title {
@@ -28,6 +42,8 @@ img {
     width: 100%;
     object-fit: cover;
     object-position: center;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
     display: block;
 }
 
@@ -35,10 +51,8 @@ img {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 100%;
-    /* Se adapta al contenedor padre */
+    width: 90%;
     padding: 0 8px;
-    /* Espaciado horizontal */
 }
 
 .point-rating {
@@ -55,12 +69,43 @@ img {
     /* color base (vacías) */
 }
 
+.p-left-15{
+    padding-left: 15px;
+}
+
 .stars.filled {
     color: rgb(0, 0, 0);
     position: absolute;
     top: 0;
     left: 0;
     overflow: hidden;
-    /* recorta según el width */
     white-space: nowrap;
+}
+
+.routes-scroll {
+  overflow-y: auto;
+  padding-right: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Scrollbar minimalista */
+.routes-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.routes-scroll::-webkit-scrollbar-track {
+  background: #f2f2f2;
+  border-radius: 4px;
+}
+
+.routes-scroll::-webkit-scrollbar-thumb {
+  background: #bdbdbd;
+  border-radius: 4px;
+  transition: background 0.3s;
+}
+
+.routes-scroll::-webkit-scrollbar-thumb:hover {
+  background: #888;
 }

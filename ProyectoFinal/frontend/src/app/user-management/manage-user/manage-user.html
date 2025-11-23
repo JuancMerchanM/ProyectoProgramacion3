@@ -1,0 +1,15 @@
+<div class="container">
+    <button class="return" (click)="showUser.emit()">
+        <img src="display-icon.png" alt="Volver a pantalla de usuario">
+        Volver
+    </button>
+    <div class="tabs">
+        <button [class.active]="showUpdate()" class="tab" (click)="setTab(true)">Actualizar datos</button>
+        <button [class.active]="!showUpdate()" class="tab" (click)="setTab(false)">Eliminar cuenta</button>
+    </div>
+    @if (showUpdate()) {
+    <app-update-user />
+    }@else {
+    <app-delete-user />
+    }
+</div>

@@ -2,13 +2,15 @@ package com.Uptc.ProyectoFinal.dto;
 
 public class AuthResponse {
     private String token;
+    private Long id;
     private String username;
     private String email;
 
-    public AuthResponse(String token, String username, String email) {
+    public AuthResponse(Long id, String token, String username, String email) {
         this.token = token;
         this.username = username;
         this.email = email;
+        this.id = id;
     }
 
     public String getToken() {
@@ -33,5 +35,13 @@ public class AuthResponse {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

@@ -31,7 +31,7 @@ public class RouteController {
 
     // Obtener una ruta específica
     @GetMapping("/{id}")
-    public ResponseEntity<Route> getById(@PathVariable String id) {
+    public ResponseEntity<Route> getById(@PathVariable Long id) {
         return ResponseEntity.ok(routeService.getById(id));
     }
 
@@ -43,13 +43,13 @@ public class RouteController {
 
     // Actualizar ruta (solo si es del usuario actual)
     @PutMapping("/{id}")
-    public ResponseEntity<Route> update(@PathVariable String id, @RequestBody Route updated) {
+    public ResponseEntity<Route> update(@PathVariable Long id, @RequestBody Route updated) {
         return ResponseEntity.ok(routeService.update(id, updated));
     }
 
     // Eliminar ruta
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable String id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         routeService.delete(id);
         return ResponseEntity.noContent().build();
     }
