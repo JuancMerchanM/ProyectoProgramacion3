@@ -1,5 +1,6 @@
 export interface LoggedInUser {
-  email: string;
+  id: number;        // ← AGREGAR
   username: string;
-  lenPassword: number;
+  email: string;
+  lenPassword?: number;
 }

@@ -1,23 +1,24 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Subscription } from 'rxjs';
 import { AuthenticationService } from 'app/authentication/authentication-service';
 import { LoggedInUser } from 'app/interfaces/LoggedInUser.interface';
 import { ShowMap } from 'app/map-management/show-map/show-map';
 import { ListPosts } from 'app/post-management/list-posts/list-posts';
 import { CreateRoute } from 'app/route-management/create-route/create-route';
 import { UserList } from 'app/user-management/user-list/user-list';
-import { ListRoutes, RouteAction } from 'app/route-management/list-routes/list-routes';
+import { UserService } from 'app/user-management/user-service';
+import { ManageUser } from "app/user-management/manage-user/manage-user";
+import { ListRoutes, RouteAction } from "app/route-management/list-routes/list-routes";
 import { Route, RouteService } from 'app/route-management/route-service';
 import { SimpleRoute } from 'app/interfaces/SimpleRoute.interface';
-import { CommonModule } from '@angular/common';
-import { Subscription } from 'rxjs';
-
-
 import { MapService } from 'app/map-management/map-service';
 import { OsrmService } from 'app/route-management/osrm.service';
 import { CreatePost } from 'app/post-management/create-post/create-post';
+
 @Component({
   selector: 'app-home',
-  imports: [CommonModule, ShowMap, UserList, ListPosts, CreateRoute, CreatePost],
+  imports: [CommonModule, ShowMap, UserList, ListPosts, CreateRoute, ManageUser, ListRoutes, CreatePost],
   templateUrl: './home.html',
   styleUrl: './home.css'
 })
@@ -42,12 +43,13 @@ export class Home implements OnInit, OnDestroy {
   private routesSubscription?: Subscription;
   
   constructor(
+    private userService: UserService,
     private authService: AuthenticationService,
     private routeService: RouteService,
     private mapService: MapService,
     private osrmService: OsrmService
   ) {
-    this.user = this.authService.user();
+    this.user = this.userService.user();
   }
 
   ngOnInit() {

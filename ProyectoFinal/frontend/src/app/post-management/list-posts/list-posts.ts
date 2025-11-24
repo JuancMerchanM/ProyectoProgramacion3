@@ -2,7 +2,6 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { PostService, RoutePost } from '../post.service';
-import { PointSimpleCard } from "@shared/point-simple-card/point-simple-card";
 import { AuthenticationService } from 'app/authentication/authentication-service';
 
 @Component({
@@ -110,7 +109,6 @@ export class ListPosts implements OnInit, OnDestroy {
       this.postService.deactivatePost(post.id).subscribe({
         next: () => {
           console.log('✅ Publicación eliminada exitosamente');
-          // La recarga se hará automáticamente gracias a postsChanged$
         },
         error: (err) => {
           console.error('❌ Error al eliminar publicación:', err);

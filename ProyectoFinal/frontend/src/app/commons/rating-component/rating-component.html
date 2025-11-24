@@ -1,0 +1,14 @@
+<div class="stars">
+    @for (star of [1,2,3,4,5]; track $index) {
+    <span class="star" [class.active]="isActive(star)" (mouseenter)="onMouseEnter(star)" (mouseleave)="onMouseLeave()"
+        (click)="onClick(star)">★</span>
+    }
+</div>
+
+@if (!allowHover()) {
+<div class="actions">
+    <span class="confirm" (click)="confirm()">Puntuar</span>
+    <span class="cancel" (click)="cancel()">Cancelar</span>
+</div>
+}
+<!-- Botones solo cuando ya se seleccionó una estrella -->

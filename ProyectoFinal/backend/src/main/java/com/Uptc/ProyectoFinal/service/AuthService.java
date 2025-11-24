@@ -9,12 +9,9 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.Uptc.ProyectoFinal.dto.AuthResponse;
-import com.Uptc.ProyectoFinal.dto.LoginRequest;
-import com.Uptc.ProyectoFinal.dto.RegisterRequest;
-import com.Uptc.ProyectoFinal.entity.User;
-import com.Uptc.ProyectoFinal.repository.UserRepository;
-
+import com.Uptc.ProyectoFinal.entity.*;
+import com.Uptc.ProyectoFinal.dto.*;
+import com.Uptc.ProyectoFinal.repository.*;
 @Service
 public class AuthService {
 
@@ -45,7 +42,7 @@ public class AuthService {
         }
 
         String token = jwtService.generateToken(user.getUsername());
-        return new AuthResponse(token, user.getUsername(), user.getEmail());
+        return new AuthResponse(token, user.getUsername(), user.getEmail(), user.getId());  // ← Agregar user.getId()
     }
 
     public boolean register(RegisterRequest request) {

@@ -1,0 +1,24 @@
+<div class="container">
+    <app-alert #alertUpdate />
+    <form class="form" #form="ngForm">
+
+        <app-input-field class="mb-20" label="Username" type="text" name="newUsername" id="newUsername" [(ngModel)]="updatedUser.username"
+            [required]="true" />
+        <app-input-field class="mb-20" label="Correo" type="email" name="newEmail" id="newEmail" [(ngModel)]="updatedUser.email" [required]="true" />
+        <app-input-field class="mb-20" name="newPassword" id="newPassword" [(ngModel)]="updatedUser.password" label="Contraseña" type="password"
+            [required]="true" />
+        <p class="info">
+            Actualice los campos que desee y luego escriba su contraseña actual para confirmar los cambios.
+        </p>
+        <app-input-field class="mb-10" name="oldPassword" id="oldPassword" [(ngModel)]="updatedUser.oldPassword" label="Contraseña antigua" type="password"
+            [required]="false" />
+
+        @if (errorMessage) {
+        <p class="error-message">
+            {{errorMessage}}
+        </p>
+        }
+
+        <button class="button" (click)="onSubmit(form)" [disabled]="form.invalid">Actualizar</button>
+    </form>
+</div>

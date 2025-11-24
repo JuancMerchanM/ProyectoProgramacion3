@@ -11,8 +11,12 @@
         <!-- BOTONES DEL PANEL -->
         <div class="panel-buttons">
             <button (click)="togglePanel('user')">
-                <img src="userProfile-icon.png" alt="user profile">
-                <span class="tooltip">User profile</span>
+                <img src="userProfile-icon.png" alt="Perfil del usuario">
+                <span class="tooltip">Perfil del usuario</span>
+            </button>
+            <button (click)="togglePanel('routes')">
+                <img src="routes.png" alt="Ver mis rutas">
+                <span class="tooltip">Ver mis rutas</span>
             </button>
             <button (click)="togglePanel('posts')">
                 <img src="posts-icon.png" alt="posts">
@@ -22,7 +26,6 @@
                 <img src="add-icon.png" alt="create route">
                 <span class="tooltip">Create route</span>
             </button>
-
             <button (click)="logout()">
                 <img src="logout.png" alt="cerrar sesion">
                 <span class="tooltip">Cerrar sesion</span>
@@ -36,13 +39,15 @@
         <!-- CONTENIDO EXPANDIBLE -->
         <div class="panel-content" [class.visible]="panelOpen">
             @if (activePanel === 'user') {
-            <app-user-list 
-                [username]="user?.username" 
-                [email]="user?.email" 
-                [lenPassword]="user?.lenPassword ?? 0"
-                [routes]="userRoutes"
-                (routeAction)="onRouteAction($event)"
-                (createRoute)="onCreateRouteClick()" />
+            <app-user-list (manageAccount)="togglePanel('manageAccount')"/>
+            }
+            @if (activePanel === 'manageAccount') {
+                <app-manage-user (showUser)="togglePanel('user')"/>
+            }
+            @if (activePanel === 'routes') {
+                <app-list-routes 
+                    [routes]="userRoutes"
+                    (routeAction)="onRouteAction($event)" />
             }
             @if (activePanel === 'posts') {
             <app-list-posts />

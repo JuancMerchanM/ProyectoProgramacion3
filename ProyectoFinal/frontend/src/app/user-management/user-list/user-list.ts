@@ -1,7 +1,7 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, effect, EventEmitter, inject, Output } from '@angular/core';
 import { InputBox } from "app/commons/input-box/input-box";
-import { ListRoutes, RouteAction } from "app/route-management/list-routes/list-routes";
-import { SimpleRoute } from 'app/interfaces/SimpleRoute.interface';
+import { ListRoutes } from "app/route-management/list-routes/list-routes";
+import { UserService } from '../user-service';
 
 @Component({
   selector: 'app-user-list',
@@ -10,22 +10,26 @@ import { SimpleRoute } from 'app/interfaces/SimpleRoute.interface';
   styleUrl: './user-list.css'
 })
 export class UserList {
-  @Input() username?: string;
-  @Input() email?: string;
-  @Input() lenPassword!: number;
-  @Input() routes: SimpleRoute[] = [];
-  @Output() routeAction = new EventEmitter<RouteAction>();
-  @Output() createRoute = new EventEmitter<void>();
+
+  constructor (private userService: UserService) {}
+
+  @Output() manageAccount = new EventEmitter<void>();
+
+  userEffect = effect(() => {
+    const u = this.userService.user();
+
+    if (u) {
+      this.username = u.username;
+      this.email = u.email;
+this.password = this.createStars(u.lenPassword ?? 0);
+    }
+  });
+
+  username: string = "";
+  email: string = "";
+  password: string = "";
 
   createStars(length: number): string {
-    return '*'.repeat(length);
-  }
-
-  onRouteAction(event: RouteAction) {
-    this.routeAction.emit(event);
-  }
-
-  onCreateRoute() {
-    this.createRoute.emit();
+    return "*".repeat(length);
   }
 }

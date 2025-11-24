@@ -1,21 +1,8 @@
 <div class="container">
     <img src="Logo.png" class="avatar" style="align-self: center; margin-bottom: 22px;">
     <span style="align-self: center; margin-bottom: 22px;">{{username}}</span>
-    <app-input-box lbText="Correo" text="{{email}}" />
-    <app-input-box lbText="Contraseña" text="{{createStars(lenPassword)}}" />
+    <app-input-box label="Correo" [(value)]="email" />
+    <app-input-box label="Contraseña" [value]="password" />
 
-    <div class="routes-header">
-        <span class="title">Mis rutas</span>
-        <span class="icon" (click)="onCreateRoute()" style="cursor: pointer;" title="Crear nueva ruta">+</span>
-    </div>
-    <hr class="divider">
-    <div class="routes-scroll">
-        @if (routes.length > 0) {
-            <app-list-routes [routes]="routes" (routeAction)="onRouteAction($event)" />
-        } @else {
-            <p style="padding: 16px; text-align: center; color: #666;">
-                No tienes rutas guardadas aún. ¡Crea tu primera ruta!
-            </p>
-        }
-    </div>
+    <button class="button" (click)="manageAccount.emit()">Gestionar cuenta</button>
 </div>

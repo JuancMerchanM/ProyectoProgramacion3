@@ -49,25 +49,26 @@ export class LoginComponent {
     }
   }
 
-  onLogin() {
-    const result = this.validateUsernameOrEmail(this.usernameOrEmail);
+ onLogin() {
+  const result = this.validateUsernameOrEmail(this.usernameOrEmail);
 
-    if (!result.valid) {
-      this.errorMessage = result.message;
-      return;
-    } else {
-      this.errorMessage = '';
-    }
-    this.authService.login(this.usernameOrEmail, this.password)
-      .subscribe({
-        next: (res) => {
-          this.errorMessage = '';
-        },
-        error: (err) => {
-          this.errorMessage = 'Credenciales inválidas';
-        }
-      });
+  if (!result.valid) {
+    this.errorMessage = result.message;
+    return;
+  } else {
+    this.errorMessage = '';
   }
+  this.authService.login(this.usernameOrEmail, this.password)
+    .subscribe({
+      next: (res) => {
+        console.log('RESPUESTA DEL BACKEND:', res); // ← AGREGAR ESTO
+        this.errorMessage = '';
+      },
+      error: (err) => {
+        this.errorMessage = 'Credenciales inválidas';
+      }
+    });
+}
 
   onCreateAccount(event: Event) {
     event.preventDefault();

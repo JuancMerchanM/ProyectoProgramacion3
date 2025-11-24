@@ -1,5 +1,4 @@
 package com.Uptc.ProyectoFinal.controller;
-
 import java.util.List;
 import java.util.Map;
 
@@ -8,9 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
-
-import com.Uptc.ProyectoFinal.service.*;
 import com.Uptc.ProyectoFinal.dto.*;
+import com.Uptc.ProyectoFinal.service.*;
+
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping("/posts")

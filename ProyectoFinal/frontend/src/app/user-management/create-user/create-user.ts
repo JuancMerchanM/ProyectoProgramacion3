@@ -38,37 +38,51 @@ export class CreateUser {
   }
 
 
-  onSubmit(form: any): void {
-    if (form.invalid) {
-      Object.values(form.controls).forEach((c: any) => c.markAsTouched());
-      return;
-    }
-
-    if (!this.validateUsername(this.user.username)) {
-      this.errorMessage = 'Nombre de usuario invalido: solo letras, numeros, _, -, &, $ estan permitidos.';
-      return;
-    }
-
-    if (this.user.password !== this.confirmPassword) {
-      this.errorMessage = 'Las contraseñas no coinciden.';
-      this.isSuccess = false;
-      return;
-    }
-    this.userService.createUser(this.user).subscribe({
-      next: () => {
-        this.errorMessage = '';
-        this.alert.show("Cuenta creada exitosamente", "error", 1200);
-        this.isSuccess = true;
-
-        setTimeout(() => this.goToLogin.emit(), 1500);
-      },
-      error: (err) => {
-        console.error(err);
-        this.errorMessage = 'Error creando la cuenta.';
-        this.isSuccess = false;
-      }
-    });
+ onSubmit(form: any): void {
+  if (form.invalid) {
+    Object.values(form.controls).forEach((c: any) => c.markAsTouched());
+    return;
   }
+
+  if (!this.validateUsername(this.user.username)) {
+    this.errorMessage = 'Nombre de usuario invalido: solo letras, numeros, _, -, &, $ estan permitidos.';
+    return;
+  }
+
+  if (this.user.password !== this.confirmPassword) {
+    this.errorMessage = 'Las contraseñas no coinciden.';
+    this.isSuccess = false;
+    return;
+  }
+  
+  this.userService.createUser(this.user).subscribe({
+    next: () => {
+      this.errorMessage = '';
+      this.alert.show("Cuenta creada exitosamente", "success", 1200);
+      this.isSuccess = true;
+
+      setTimeout(() => this.goToLogin.emit(), 1500);
+    },
+    error: (err) => {
+      console.log('Error completo:', err);
+      
+      // Manejo seguro del error basado en el status
+      if (err.status === 401) {
+        this.errorMessage = 'No autorizado. Verifica tus credenciales.';
+      } else if (err.status === 409) {
+        this.errorMessage = 'El usuario o email ya existe.';
+      } else if (err.error?.error) {
+        this.errorMessage = err.error.error;
+      } else if (typeof err.error === 'string') {
+        this.errorMessage = err.error;
+      } else {
+        this.errorMessage = 'Error al crear la cuenta. Por favor intenta de nuevo.';
+      }
+      
+      this.isSuccess = false;
+    }
+  });
+}
 
   onGoToLogin(event: Event) {
     event.preventDefault();

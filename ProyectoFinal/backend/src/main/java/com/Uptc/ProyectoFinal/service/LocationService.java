@@ -2,9 +2,9 @@ package com.Uptc.ProyectoFinal.service;
 
 import org.springframework.stereotype.Service;
 
-import com.Uptc.ProyectoFinal.entity.Location;
-import com.Uptc.ProyectoFinal.entity.LocationCategory;
-import com.Uptc.ProyectoFinal.repository.LocationRepository;
+import com.Uptc.ProyectoFinal.entity.*;
+
+import com.Uptc.ProyectoFinal.repository.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -51,5 +51,13 @@ public class LocationService {
         } catch (IllegalArgumentException e) {
             return List.of();
         }
+    }
+    public Location updateRating(Long id, Double newRating) {
+        return repository.findById(id)
+                .map(location -> {
+                    location.setRating(newRating);
+                    return repository.save(location);
+                })
+                .orElseThrow(() -> new RuntimeException("Localización no encontrada: " + id));
     }
 }

@@ -12,12 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.Uptc.ProyectoFinal.dto.AuthResponse;
-import com.Uptc.ProyectoFinal.dto.LoginRequest;
-import com.Uptc.ProyectoFinal.dto.RegisterRequest;
-import com.Uptc.ProyectoFinal.dto.ResetPasswordRequest;
-import com.Uptc.ProyectoFinal.service.AuthService;
 
+
+import com.Uptc.ProyectoFinal.dto.*;
+import com.Uptc.ProyectoFinal.service.*;
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping("/auth")

@@ -15,7 +15,22 @@ export class MapService {
   private allMarkers: L.Marker[] = []; // Todos los marcadores del mapa
   private markerMap: Map<number, L.Marker> = new Map(); // Mapeo de ID a marcador
 
-  private icons: Record<string, L.Icon> = {
+  // Íconos con DivIcon (SVG personalizado)
+  private divIcons: Record<string, L.DivIcon> = {
+    CASCADA: this.createDivIcon('categories/CASCADA.png'),
+    SENDERO: this.createDivIcon('categories/sendero.png'),
+    MONTAÑA: this.createDivIcon('categories/montana.png'),
+    MIRADOR: this.createDivIcon('categories/mirador.png'),
+    MUSEO: this.createDivIcon('categories/museo.png'),
+    LAGUNA: this.createDivIcon('categories/lago.png'),
+    SITIO_HISTORICO: this.createDivIcon('categories/sitioHistorico.png'),
+    PARQUE: this.createDivIcon('categories/parque.png'),
+    RELIGIOSO: this.createDivIcon('categories/religion.png'),
+    DEFAULT_DIV: this.createDivIcon('categories/other.png'),
+  };
+
+  // Íconos con Icon (imágenes PNG directas)
+  private pngIcons: Record<string, L.Icon> = {
     CASCADA: this.createIcon('categories/CASCADApoint.png'),
     SENDERO: this.createIcon('categories/SENDERO.png'),
     DEFAULT: this.createIcon('categories/CASCADApoint.png'),
@@ -31,6 +46,28 @@ export class MapService {
     return this.map;
   }
 
+  // Método para crear SVG personalizado (DivIcon)
+  private getSvg(iconSrc: string): string {
+    return `
+  <svg viewBox="0 0 100 140" width="40" height="56">
+    <circle cx="50" cy="50" r="45" fill="#001A8E"/>
+    <circle cx="50" cy="50" r="38" fill="white"/>
+    <image href="${iconSrc}" x="25" y="25" width="50" height="50"/>
+    <polygon points="50,140 20,80 80,80" fill="#001A8E"/>
+  </svg>`;
+  }
+
+  private createDivIcon(url: string): L.DivIcon {
+    return L.divIcon({
+      html: this.getSvg(url),
+      className: '',
+      iconSize: [40, 56],
+      iconAnchor: [20, 56],
+      popupAnchor: [0, -56]
+    });
+  }
+
+  // Método para crear ícono PNG directo
   private createIcon(url: string): L.Icon {
     return L.icon({
       iconUrl: url,
@@ -47,15 +84,26 @@ export class MapService {
     });
   }
 
-  addPoint(point: Point) {
-    const icon = this.icons[point.category] ?? this.icons['DEFAULT'];
+  /**
+   * Agrega un punto al mapa
+   * @param point Punto a agregar
+   * @param useDivIcon Si es true, usa DivIcon (SVG), si es false usa Icon (PNG)
+   */
+  addPoint(point: Point, useDivIcon: boolean = true) {
+    let icon: L.Icon | L.DivIcon;
+
+    if (useDivIcon) {
+      icon = this.divIcons[point.category] ?? this.divIcons['DEFAULT_DIV'];
+    } else {
+      icon = this.pngIcons[point.category] ?? this.pngIcons['DEFAULT'];
+    }
 
     const marker = L.marker([point.location.lat, point.location.lng], { icon })
       .addTo(this.map)
       .bindPopup(point.name);
 
     marker.on('click', () => {
-      console.log(point)
+      console.log(point);
       this.selectedPoint.set(point);
     });
 
@@ -66,10 +114,18 @@ export class MapService {
     }
   }
 
-  addPoints(points: Point[]) {
-    points.forEach(p => this.addPoint(p));
+  /**
+   * Agrega múltiples puntos al mapa
+   * @param points Array de puntos
+   * @param useDivIcon Si es true, usa DivIcon (SVG), si es false usa Icon (PNG)
+   */
+  addPoints(points: Point[], useDivIcon: boolean = true) {
+    points.forEach(p => this.addPoint(p, useDivIcon));
   }
 
+  /**
+   * Elimina todos los marcadores del mapa
+   */
   clearAllMarkers() {
     this.allMarkers.forEach(marker => {
       if (this.map) {
@@ -121,6 +177,7 @@ export class MapService {
     console.log(`📍 Quedan ${this.allMarkers.length} marcadores visibles`);
   }
 
+  // Métodos HTTP para obtener puntos
   getAll(): Observable<Point[]> {
     return this.http.get<Point[]>(`${this.baseUrl}/`, {
       headers: this.getHeaders()

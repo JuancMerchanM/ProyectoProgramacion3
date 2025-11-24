@@ -4,11 +4,13 @@ public class AuthResponse {
     private String token;
     private String username;
     private String email;
+    private Long id;  // ← AGREGAR
 
-    public AuthResponse(String token, String username, String email) {
+    public AuthResponse(String token, String username, String email, Long id) {  // ← MODIFICAR constructor
         this.token = token;
         this.username = username;
         this.email = email;
+        this.id = id;  // ← AGREGAR
     }
 
     public String getToken() {
@@ -33,5 +35,14 @@ public class AuthResponse {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    // ← AGREGAR getter y setter para id
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

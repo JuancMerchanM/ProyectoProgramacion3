@@ -20,19 +20,30 @@ export class AuthenticationService {
     }
    }
 
-  login(usernameOrEmail: string, password: string) {
-    return this.http.post<{ token: string; username: string, email: string }>(`${this.apiUrl}/login`, { usernameOrEmail, password })
-      .pipe(
-      tap(res => {
-        localStorage.setItem('token', res.token);
-        localStorage.setItem('user', JSON.stringify({ username: res.username, email: res.email, lenPassword: password.length }));
-        this.router.navigate(['/home']);
-      }),
-      catchError(err => {
-        return throwError(() => err); 
-      })
-    );
-  }
+login(usernameOrEmail: string, password: string) {
+  return this.http.post<{ token: string; username: string; email: string; id: number }>(`${this.apiUrl}/login`, { usernameOrEmail, password })
+    .pipe(
+    tap(res => {
+      console.log('===== DEBUG LOGIN =====');
+      console.log('Respuesta completa:', res);
+      console.log('res.id:', res.id);
+      console.log('Tipo de res.id:', typeof res.id);
+      console.log('=======================');
+      
+      localStorage.setItem('token', res.token);
+      localStorage.setItem('user', JSON.stringify({ 
+        id: res.id,
+        username: res.username, 
+        email: res.email, 
+        lenPassword: password.length 
+      }));
+      this.router.navigate(['/home']);
+    }),
+    catchError(err => {
+      return throwError(() => err); 
+    })
+  );
+}
 
   logout() {
     localStorage.removeItem('token');

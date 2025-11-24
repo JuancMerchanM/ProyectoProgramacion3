@@ -1,6 +1,7 @@
 package com.Uptc.ProyectoFinal.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -13,9 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.Uptc.ProyectoFinal.entity.Location;
-import com.Uptc.ProyectoFinal.service.LocationService;
+import com.Uptc.ProyectoFinal.entity.*;
 
+import com.Uptc.ProyectoFinal.service.*;
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping("/location")
@@ -68,6 +69,26 @@ public class LocationController {
             return ResponseEntity.noContent().build();
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().build();
+        }
+    }
+    @PutMapping("/{id}/rating")
+    public ResponseEntity<Location> updateRating(
+            @PathVariable String id,
+            @RequestBody Map<String, Double> ratingData) {
+        try {
+            Long locationId = Long.parseLong(id);
+            Double newRating = ratingData.get("rating");
+            
+            if (newRating == null || newRating < 0 || newRating > 5) {
+                return ResponseEntity.badRequest().build();
+            }
+            
+            Location updated = service.updateRating(locationId, newRating);
+            return ResponseEntity.ok(updated);
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
         }
     }
 }

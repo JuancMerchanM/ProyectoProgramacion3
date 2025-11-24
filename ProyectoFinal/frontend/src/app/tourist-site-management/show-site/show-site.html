@@ -5,25 +5,33 @@
         <span class="title">{{point.name}}</span>
         <span class="normal-text">{{point.category}}</span>
     </div>
-    <span class="mb-6">
+    <span class="mb-6 p-left-15">
         Municipio {{ point.municipality }}
-        <!-- @if (point.lastPoint != 0) {
-        <br>Distancia a último punto: {{ point.lastPoint }} km
-        } -->
     </span>
-    <span class="title mb-6" style="font-size: 15px;">Rutas que podrian interesarte</span>
-    <app-list-routes [routes]="[{ name: 'Ruta del Café Boyacense', date: '2025-03-21', privacy: 'Pública', distance: 125, spots: 8 },
-      { name: 'Aventura en la Sierra Nevada', date: '2025-04-10', privacy: 'Privada', distance: 312, spots: 12 },
-      { name: 'Tour por los Pueblos Patrimonio', date: '2025-05-02', privacy: 'Pública', distance: 450, spots: 15 },
-      { name: 'Ruta Ecológica del Cocuy', date: '2025-06-15', privacy: 'Privada', distance: 210, spots: 9 },
-      { name: 'Costa Caribe Express', date: '2025-07-08', privacy: 'Pública', distance: 580, spots: 11 }]" />
-    <div class="two-columns">
-        <span class="title" style="font-size: 15px;">Puntuacion</span>
-        <div class="point-rating">
-            <span class="stars">★★★★★</span>
-            <span class="stars filled" [style.width.%]="point.rating">★★★★★</span>
+    <span class="title mb-6 p-left-15" style="font-size: 15px;">Rutas que podrian interesarte</span>
+    <div class="routes-scroll p-left-15">
+        @for (route of routes; track route.name) {
+        <div class="route-item">
+            <div class="route-name">{{ route.name }}</div>
+            <div class="route-details">
+                <span>{{ route.date }}</span> • 
+                <span>{{ route.privacy }}</span> • 
+                <span>{{ route.distance }} km</span> • 
+                <span>{{ route.spots }} puntos</span>
+            </div>
         </div>
+        }
     </div>
+    <div class="two-columns">
+    <span class="title" style="font-size: 15px;">Puntuación</span>
+    <div class="point-rating p-left-15">
+        <span class="stars">★★★★</span>
+        <span class="stars filled" [style.width.%]="(point.rating || 0) * 20">★★★★★</span>
+    </div>
+    <app-rating-component 
+        [rating]="point.rating || 0" 
+        (rated)="onRatingChange($event)"/>
+</div>
     }@else {
     <span>NO DATA</span>
     }
